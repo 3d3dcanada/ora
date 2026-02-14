@@ -1,0 +1,246 @@
+python----
+
+
+
+
+from openai import OpenAI
+
+client = OpenAI(
+  base_url = "https://integrate.api.nvidia.com/v1",
+  api_key = "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"
+)
+
+completion = client.chat.completions.create(
+  model="mistralai/devstral-2-123b-instruct-2512",
+  messages=[{"role":"user","content":""}],
+  temperature=0.15,
+  top_p=0.95,
+  max_tokens=8192,
+  seed=42,
+  stream=True
+)
+
+for chunk in completion:
+  if chunk.choices and chunk.choices[0].delta.content is not None:
+    print(chunk.choices[0].delta.content, end="")
+  
+
+
+
+
+
+
+  
+
+
+
+LANG-------
+
+
+from langchain_nvidia_ai_endpoints import ChatNVIDIA
+
+client = ChatNVIDIA(
+  model="mistralai/devstral-2-123b-instruct-2512",
+  api_key="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", 
+  temperature=0.15,
+  top_p=0.95,
+  max_tokens=8192,
+)
+
+for chunk in client.stream([{"role":"user","content":""}]):
+  
+    print(chunk.content, end="")
+
+
+
+
+
+
+
+
+NODE-------
+
+
+
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  apiKey: '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',
+  baseURL: 'https://integrate.api.nvidia.com/v1',
+})
+ 
+async function main() {
+  const completion = await openai.chat.completions.create({
+    model: "mistralai/devstral-2-123b-instruct-2512",
+    messages: [{"role":"user","content":""}],
+    temperature: 0.15,
+    top_p: 0.95,
+    max_tokens: 8192,
+    stream: true
+  })
+   
+  for await (const chunk of completion) {
+        process.stdout.write(chunk.choices[0]?.delta?.content || '')
+    
+  }
+  
+}
+
+main();
+
+
+
+
+SHELL----
+
+
+invoke_url='https://integrate.api.nvidia.com/v1/chat/completions'
+
+authorization_header='Authorization: Bearer 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'
+accept_header='Accept: application/json'
+content_type_header='Content-Type: application/json'
+
+data=$'{
+  "model": "mistralai/devstral-2-123b-instruct-2512",
+  "messages": [
+    {
+      "role": "user",
+      "content": ""
+    }
+  ],
+  "temperature": 0.15,
+  "top_p": 0.95,
+  "max_tokens": 8192,
+  "seed": 42,
+  "stream": true
+}'
+
+response=$(curl --silent -i -w "\n%{http_code}" --request POST \
+  --url "$invoke_url" \
+  --header "$authorization_header" \
+  --header "$accept_header" \
+  --header "$content_type_header" \
+  --data "$data"
+)
+
+echo "$response"
+
+
+devstral-2-123b-instruct-2512
+State-of-the-art open code model with deep reasoning, 256k context, and unmatched efficiency.
+
+agentic
+coding
+reasoning
+text-to-code
+Overview
+Devstral 2 123B Instruct 2512
+Description
+Devstral 2 123B Instruct 2512 is an agentic large language model designed for software engineering tasks. The model excels at using tools to explore codebases, editing multiple files, and powering software engineering agents, achieving remarkable performance on SWE-bench benchmarks.
+
+This model is ready for commercial/non-commercial use.
+
+Third-Party Community Consideration:
+This model is not owned or developed by NVIDIA. This model has been developed and built to a third-party's requirements for this application and use case; see link to Non-NVIDIA Devstral 2 123B Instruct 2512 FP8 Model Card
+
+License and Terms of Use:
+GOVERNING TERMS: The trial service is governed by the NVIDIA API Trial Terms of Service. Use of this model is governed by the Modified MIT license.
+
+Deployment Geography:
+Global
+
+Use Case:
+Use Case: AI code assistants, agentic coding, and software engineering tasks. Designed for developers and organizations leveraging advanced AI capabilities for complex tool integration and deep codebase understanding in coding environments.
+
+Release Date:
+Build.NVIDIA.com: 12/2025 via link
+Huggingface: 12/2025 via link
+
+Reference(s):
+References:
+
+Mistral AI Model Card
+Mistral Vibe CLI
+Scalable-Softmax Is Superior for Attention
+vLLM Documentation
+Model Architecture:
+Architecture Type: Transformer
+Network Architecture: Mixture-of-Experts with rope-scaling
+Total Parameters: 123B
+
+Input:
+Input Types: Text
+Input Formats: String
+Input Parameters: One Dimensional (1D)
+Other Input Properties: Text prompts for code generation and agentic coding tasks; supports system prompts for specialized behavior.
+
+Output:
+Output Types: Text
+Output Format: String
+Output Parameters: One Dimensional (1D)
+Other Output Properties: Generated code, tool calls, and natural language responses for software engineering tasks.
+
+Our AI models are designed and/or optimized to run on NVIDIA GPU-accelerated systems. By leveraging NVIDIA's hardware (e.g. GPU cores) and software frameworks (e.g., CUDA libraries), the model achieves faster training and inference times compared to CPU-only solutions.
+
+Software Integration:
+Runtime Engines:
+
+vLLM: >= 0.12.0
+mistral-common: >= 1.8.6
+Supported Hardware:
+
+NVIDIA Ampere: A100
+NVIDIA Blackwell: B200, B100, GB200
+NVIDIA Hopper: H100, H200
+Operating Systems: Linux
+
+The integration of foundation and fine-tuned models into AI systems requires additional testing using use-case-specific data to ensure safe and effective deployment. Following the V-model methodology, iterative testing and validation at both unit and system levels are essential to mitigate risks, meet technical and functional requirements, and ensure compliance with safety and ethical standards before deployment.
+
+Model Version(s)
+v1.0 (December 2025) - FP8 quantized variant
+
+Training, Testing, and Evaluation Datasets:
+Training Dataset
+Data Modality: Text
+Training Data Collection: Undisclosed
+Training Labeling: Undisclosed
+Training Properties: Undisclosed
+
+Testing Dataset
+Testing Data Collection: Undisclosed
+Testing Labeling: Undisclosed
+Testing Properties: Undisclosed
+
+Evaluation Dataset
+Evaluation Benchmark Score: 72.2% on SWE-Bench Verified; 61.3% on SWE-Bench Multilingual; 40.5% on Terminal Bench
+Evaluation Data Collection: Automated
+Evaluation Labeling: Human
+Evaluation Properties: SWE-Bench Verified, SWE-Bench Multilingual, and Terminal Bench are standard benchmarks for evaluating software engineering capabilities in AI models.
+
+Inference
+Acceleration Engine: vLLM with mistral-common tokenizer
+Test Hardware: 8× NVIDIA GPU with tensor parallelism (FP8 precision)
+
+Additional Details
+Deployment Options
+Devstral 2 can be deployed using:
+
+Mistral Vibe CLI: Command-line tool for leveraging Devstral capabilities directly in the terminal
+OpenHands: Docker-based deployment for agentic coding workflows
+vLLM Server: Production-ready inference with tensor parallelism support
+Recommended Deployment Settings
+For optimal performance, deploy with:
+
+vLLM >= 0.12.0 with --tool-call-parser mistral --enable-auto-tool-choice
+Tensor parallel size of 8 for full model deployment
+Temperature setting of 0.15 for code generation tasks
+Compatible Scaffoldings
+Cline
+Kilo Code
+Claude Code
+OpenHands
+SWE Agent
+Ethical Considerations
+NVIDIA believes Trustworthy AI is a shared responsibility and we have established policies and practices to enable development for a wide array of AI applications. When downloaded or used in accordance with our terms of service, developers should work with their internal model team to ensure this model meets requirements for the relevant industry and use case and addresses unforeseen product misuse.
+
+Please report model quality, risk, security vulnerabilities or NVIDIA AI Concerns here.

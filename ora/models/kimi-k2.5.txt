@@ -1,0 +1,281 @@
+python----
+
+
+
+
+import requests, base64
+
+invoke_url = "https://integrate.api.nvidia.com/v1/chat/completions"
+stream = True
+
+
+headers = {
+  "Authorization": "Bearer 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",
+  "Accept": "text/event-stream" if stream else "application/json"
+}
+
+payload = {
+  "model": "moonshotai/kimi-k2.5",
+  "messages": [{"role":"user","content":""}],
+  "max_tokens": 16384,
+  "temperature": 1.00,
+  "top_p": 1.00,
+  "stream": stream,
+  "chat_template_kwargs": {"thinking":True},
+}
+
+
+
+response = requests.post(invoke_url, headers=headers, json=payload)
+
+if stream:
+    for line in response.iter_lines():
+        if line:
+            print(line.decode("utf-8"))
+else:
+    print(response.json())
+
+
+
+
+LANG-------
+
+
+from langchain_nvidia_ai_endpoints import ChatNVIDIA
+
+client = ChatNVIDIA(
+  model="moonshotai/kimi-k2.5",
+  api_key="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",
+  temperature=1,
+  top_p=1,
+  max_completion_tokens=16384,
+)
+
+for chunk in client.stream([{"role":"user","content":""}], chat_template_kwargs={"thinking":True}):
+  
+    if chunk.additional_kwargs and "reasoning_content" in chunk.additional_kwargs:
+      print(chunk.additional_kwargs["reasoning_content"], end="")
+  
+    print(chunk.content, end="")
+
+
+
+
+
+
+
+NODE-------
+
+import axios from 'axios';
+import { readFile } from 'node:fs/promises';
+
+const invokeUrl = "https://integrate.api.nvidia.com/v1/chat/completions";
+const stream = true;
+
+const headers = {
+  "Authorization": "Bearer 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",
+  "Accept": stream ? "text/event-stream" : "application/json"
+};
+
+
+const payload = {
+  "model": "moonshotai/kimi-k2.5",
+  "messages": [{"role":"user","content":""}],
+  "max_tokens": 16384,
+  "temperature": 1.00,
+  "top_p": 1.00,
+  "stream": stream,
+  "chat_template_kwargs": {"thinking":true},
+  
+  
+};
+
+Promise.resolve(
+  axios.post(invokeUrl, payload, {
+    headers: headers,
+    responseType: stream ? 'stream' : 'json'
+  })
+)
+
+  .then(response => {
+    if (stream) {
+      response.data.on('data', (chunk) => {
+        console.log(chunk.toString());
+      });
+    } else {
+      console.log(JSON.stringify(response.data));
+    }
+  })
+  .catch(error => {
+    console.error(error);
+  });
+
+
+SHELL----
+
+
+stream=true
+
+if [ "$stream" = true ]; then
+    accept_header='Accept: text/event-stream'
+else
+    accept_header='Accept: application/json'
+fi
+
+
+echo '{
+  "model": "moonshotai/kimi-k2.5",
+  "messages": [{"role":"user","content":""}],
+  "max_tokens": 16384,
+  "temperature": 1.00,
+  "top_p": 1.00,
+  "stream": true,
+  "chat_template_kwargs": {"thinking":true}
+}' > payload.json
+
+curl https://integrate.api.nvidia.com/v1/chat/completions \
+  -H "Authorization: Bearer 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" \
+  -H "Content-Type: application/json" \
+  -H "$accept_header" \
+  -d @payload.json
+
+
+
+
+
+Kimi-K2.5
+Description
+Kimi K2.5 is an open-source, native multimodal agentic model built through continual pretraining on approximately 15 trillion mixed visual and text tokens atop Kimi-K2-Base. It seamlessly integrates vision and language understanding with advanced agentic capabilities, supporting both instant and thinking modes, as well as conversational and agentic paradigms.
+
+This model is ready for commercial/non-commercial use.
+
+Third-Party Community Consideration:
+This model is not owned or developed by NVIDIA. This model has been developed and built to a third-party's requirements for this application and use case; see link to Non-NVIDIA Kimi-K2.5 Model Card
+
+License and Terms of Use:
+GOVERNING TERMS: This trial service is governed by the NVIDIA API Trial Terms of Service. Use of this model is governed by the NVIDIA Open Model License Agreement. Additional Information: Modified MIT License.
+
+Deployment Geography:
+Global
+
+Use Case:
+Use Case: Designed for developers and enterprises building multi-modal AI agents for scenario-specific automation, visual analysis applications, advanced web development with autonomous image search and layout iteration, coding assistance, and tool-augmented agentic workflows.
+
+Release Date:
+Build.NVIDIA.com: 01/26/2026 via link
+Huggingface: 01/26/2026 via link
+
+Reference(s):
+References:
+
+Moonshot AI Official Website
+Kimi K2.5 HuggingFace Model Card
+Model Architecture:
+Architecture Type: Transformer
+Network Architecture: Mixture-of-Experts (MoE)
+Total Parameters: 1T
+Activated Parameters: 32B
+Number of Layers: 61 (including 1 Dense layer)
+Attention Hidden Dimension: 7168
+MoE Hidden Dimension (per Expert): 2048
+Number of Attention Heads: 64
+Number of Experts: 384
+Selected Experts per Token: 8
+Number of Shared Experts: 1
+Vocabulary Size: 160K
+Attention Mechanism: MLA (Multi-head Latent Attention)
+Activation Function: SwiGLU
+Vision Encoder: MoonViT
+Vision Encoder Parameters: 400M
+
+Input:
+Input Types: Image, Video, Text
+Input Formats: Red, Green, Blue (RGB), String
+Input Parameters: Two-Dimensional (2D), One-Dimensional (1D)
+Other Input Properties: Supports image, video, PDF, and text inputs. Video input is experimental. Visual features are compressed via spatial-temporal pooling before projection into the LLM.
+Input Context Length: 256K tokens
+
+Key Capabilities
+Native Multimodality: Pre-trained on vision-language tokens, excels in visual knowledge, cross-modal reasoning, and agentic tool use grounded in visual inputs
+Coding with Vision: Generates code from visual specifications (UI designs, video workflows) and autonomously orchestrates tools for visual data processing
+Agent Swarm: Transitions from single-agent scaling to a self-directed, coordinated swarm-like execution scheme; decomposes complex tasks into parallel sub-tasks executed by dynamically instantiated, domain-specific agents
+Multi-modal Agents: Building general agents tailored for unique, scenario-specific automation
+Advanced Web Development: Using image search tools to autonomously find assets and refine dynamic layouts
+Visual Analysis: High-level comprehension and reasoning for image and video data
+Complex Tool Use: Agentic search and tool-augmented workflows
+Output:
+Output Types: Text
+Output Format: String
+Output Parameters: One-Dimensional (1D)
+Other Output Properties: Generates text responses based on multi-modal inputs including reasoning, analysis, and code generation. Supports both Thinking mode (with reasoning traces) and Instant mode.
+
+Our AI models are designed and/or optimized to run on NVIDIA GPU-accelerated systems. By leveraging NVIDIA's hardware (e.g. GPU cores) and software frameworks (e.g., CUDA libraries), the model achieves faster training and inference times compared to CPU-only solutions.
+
+Software Integration:
+Runtime Engines:
+
+vLLM
+SGLang
+KTransformers
+Supported Hardware:
+
+NVIDIA Hopper: H100, H200
+Preferred Operating Systems: Linux
+
+The integration of foundation and fine-tuned models into AI systems requires additional testing using use-case-specific data to ensure safe and effective deployment. Following the V-model methodology, iterative testing and validation at both unit and system levels are essential to mitigate risks, meet technical and functional requirements, and ensure compliance with safety and ethical standards before deployment.
+
+Model Version(s)
+Kimi K2.5 v1.0
+
+Training, Testing, and Evaluation Datasets:
+Training Dataset
+Data Modality: Image, Text, Video
+Training Data Collection: Approximately 15 trillion mixed visual and text tokens
+Training Labeling: Undisclosed
+Training Properties: Continual pretraining on Kimi-K2-Base
+
+Testing Dataset
+Testing Data Collection: Undisclosed
+Testing Labeling: Undisclosed
+Testing Properties: Undisclosed
+
+Evaluation Dataset
+Evaluation Data Collection: Automated
+Evaluation Labeling: Human
+Evaluation Properties: Evaluated using Kimi Vendor Verifier on standard multi-modal benchmarks. Results reported with Thinking mode enabled, temperature=1.0, top-p=0.95, context length 256K tokens.
+
+Evaluation Benchmark Scores
+Inference
+Acceleration Engine: vLLM
+Test Hardware: H200
+
+Inference Modes
+Thinking Mode: Includes reasoning traces with reasoning_content in response. Recommended temperature=1.0.
+Instant Mode: Direct responses without reasoning traces. Recommended temperature=0.6.
+Quantization
+The model employs native INT4 weight-only quantization (Group size 32, compressed tensors) optimized for Hopper Architecture.
+
+Model Usage
+The usage demos below demonstrate how to call our official API.
+
+For third-party API deployed with vLLM or SGLang, please note that :
+
+NOTE
+Chat with video content is an experimental feature and is only supported in our official API for now
+
+The recommended temperature will be 1.0 for Thinking mode and 0.6 for Instant mode.
+
+The recommended top_p is 0.95
+
+To use instant mode, you need to pass {'chat_template_kwargs': {"thinking": False}} in extra_body.
+
+Chat Completion
+Chat Completion with visual content
+Interleaved Thinking and Multi-Step Tool Call
+K2.5 shares the same design of Interleaved Thinking and Multi-Step Tool Call as K2 Thinking. For usage example, please refer to the K2 Thinking documentation.
+
+Known Limitations
+Model is trained and optimized for Hopper Architecture; Blackwell support is separate NVIDIA development effort
+Native INT4 quantization
+Video input is experimental
+

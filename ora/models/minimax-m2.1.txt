@@ -1,0 +1,240 @@
+python----
+
+
+
+
+from openai import OpenAI
+
+client = OpenAI(
+  base_url = "https://integrate.api.nvidia.com/v1",
+  api_key = "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"
+)
+
+completion = client.chat.completions.create(
+  model="minimaxai/minimax-m2.1",
+  messages=[{"role":"user","content":""}],
+  temperature=1,
+  top_p=0.95,
+  max_tokens=8192,
+  stream=True
+)
+
+for chunk in completion:
+  if not getattr(chunk, "choices", None):
+    continue
+  if chunk.choices[0].delta.content is not None:
+    print(chunk.choices[0].delta.content, end="")
+  
+
+
+
+LANG-------
+
+
+from langchain_nvidia_ai_endpoints import ChatNVIDIA
+
+client = ChatNVIDIA(
+  model="minimaxai/minimax-m2.1",
+  api_key="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", 
+  temperature=1,
+  top_p=0.95,
+  max_tokens=8192,
+)
+
+for chunk in client.stream([{"role":"user","content":""}]):
+  print(chunk.content, end="")
+
+
+
+
+
+
+
+NODE-------
+
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  apiKey: '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',
+  baseURL: 'https://integrate.api.nvidia.com/v1',
+})
+ 
+async function main() {
+  const completion = await openai.chat.completions.create({
+    model: "minimaxai/minimax-m2.1",
+    messages: [{"role":"user","content":""}],
+    temperature: 1,
+    top_p: 0.95,
+    max_tokens: 8192,
+    stream: true
+  })
+   
+  for await (const chunk of completion) {
+    process.stdout.write(chunk.choices[0]?.delta?.content || '')
+    
+  }
+  
+}
+
+main();
+
+
+
+
+SHELL----
+
+
+invoke_url='https://integrate.api.nvidia.com/v1/chat/completions'
+
+authorization_header='Authorization: Bearer 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'
+accept_header='Accept: application/json'
+content_type_header='Content-Type: application/json'
+
+data=$'{
+  "model": "minimaxai/minimax-m2.1",
+  "messages": [
+    {
+      "role": "user",
+      "content": ""
+    }
+  ],
+  "temperature": 1,
+  "top_p": 0.95,
+  "frequency_penalty": 0,
+  "presence_penalty": 0,
+  "max_tokens": 8192,
+  "stream": true
+}'
+
+response=$(curl --silent -i -w "\n%{http_code}" --request POST \
+  --url "$invoke_url" \
+  --header "$authorization_header" \
+  --header "$accept_header" \
+  --header "$content_type_header" \
+  --data "$data"
+)
+
+echo "$response"
+
+
+
+
+MiniMax-M2.1
+Description
+MiniMax-M2.1 is a large language model optimized for agentic capabilities including coding, tool use, instruction following, and long-horizon planning. The model is designed to shatter the stereotype that high-performance agents must remain behind closed doors, enabling developers to build autonomous applications for multilingual software development and complex multi-step workflows.
+
+This model is ready for commercial/non-commercial use.
+
+Third-Party Community Consideration:
+This model is not owned or developed by NVIDIA. This model has been developed and built to a third-party's requirements for this application and use case; see link to Non-NVIDIA MiniMax-M2.1 Model Card
+
+License and Terms of Use:
+GOVERNING TERMS: Your use of the service is governed by the NVIDIA API Catalog Terms of Service. Your use of the model is governed by the NVIDIA Open Model License Agreement. ADDITIONAL INFORMATION: Modified MIT License.
+
+Deployment Geography:
+Global
+
+Use Case:
+Use Case: Developers and enterprises building autonomous AI agents for software engineering tasks, multilingual code development, automated workflows, tool calling, and long-horizon planning applications.
+
+Release Date:
+Build.NVIDIA.com: 01/2026 via link
+Huggingface: 12/20/2025 via link
+
+Reference(s):
+References:
+
+MiniMax-M2.1 on Hugging Face
+MiniMax Open Platform API
+MiniMax Agent
+arXiv Paper: WebExplorer
+VIBE Benchmark
+Model Architecture:
+Architecture Type: Transformer
+Network Architecture: Mixture-of-Experts Transformer
+Total Parameters: 230B
+
+Input:
+Input Types: Text
+Input Formats: String
+Input Parameters: One Dimensional (1D)
+Other Input Properties: Input text is tokenized using the model's native tokenizer. Recommended inference parameters: temperature=1.0, top_p=0.95, top_k=40.
+
+Output:
+Output Types: Text
+Output Format: String
+Output Parameters: One Dimensional (1D)
+Other Output Properties: Generated text responses with support for tool calling and structured outputs.
+
+Our AI models are designed and/or optimized to run on NVIDIA GPU-accelerated systems. By leveraging NVIDIA's hardware (e.g. GPU cores) and software frameworks (e.g., CUDA libraries), the model achieves faster training and inference times compared to CPU-only solutions.
+
+Software Integration:
+Runtime Engines:
+
+SGLang: Recommended for serving MiniMax-M2.1
+vLLM: Recommended for serving MiniMax-M2.1
+Transformers: Supported for local deployment
+Other: KTransformers
+Supported Hardware:
+
+NVIDIA Ampere: A100, A6000, A40
+NVIDIA Blackwell: B200, B100, GB200
+NVIDIA Hopper: H100, H200
+NVIDIA Lovelace: L40S, L40, RTX 6000 Ada Generation
+Preferred/Supported Operating Systems: Linux
+
+The integration of foundation and fine-tuned models into AI systems requires additional testing using use-case-specific data to ensure safe and effective deployment. Following the V-model methodology, iterative testing and validation at both unit and system levels are essential to mitigate risks, meet technical and functional requirements, and ensure compliance with safety and ethical standards before deployment.
+
+Model Version(s)
+MiniMax-M2.1 v2.1
+
+Training, Testing, and Evaluation Datasets:
+Training Dataset
+Data Modality: Text
+Training Data Collection: Undisclosed
+Training Labeling: Undisclosed
+Training Properties: Undisclosed
+
+Testing Dataset
+Testing Data Collection: Undisclosed
+Testing Labeling: Undisclosed
+Testing Properties: Undisclosed
+
+Evaluation Dataset
+Evaluation Benchmark Score: MiniMax-M2.1 achieves 74.0% on SWE-bench Verified, 49.4% on Multi-SWE-bench, 72.5% on SWE-bench Multilingual, and 47.9% on Terminal-bench 2.0. The model demonstrates strong performance across coding, tool use, and full-stack development benchmarks.
+
+Detailed Benchmark Comparison Table
+Evaluation Data Collection: Hybrid: Automated, Human
+Evaluation Labeling: Hybrid: Automated, Human
+Evaluation Properties: See Evaluation Methodology Notes above for detailed testing conditions per benchmark.
+
+Inference
+Acceleration Engine: SGLang
+Test Hardware: H100x4
+
+Additional Details
+Recommended Inference Parameters
+Temperature: 1.0
+Top-p: 0.95
+Top-k: 40
+Default System Prompt
+Bash
+
+Copy
+You are a helpful assistant. Your name is MiniMax-M2.1 and is built by MiniMax.
+Tool Calling
+MiniMax-M2.1 supports tool calling capabilities. Refer to the Tool Calling Guide for implementation details.
+
+Deployment Options
+API Access: Available via MiniMax Open Platform
+MiniMax Agent: Production deployment available at agent.minimax.io
+Local Deployment: Supported via SGLang, vLLM, or Transformers
+Known Capabilities
+Multilingual software development
+Complex multi-step office workflows
+Long-horizon planning
+Tool use and function calling
+Code generation and review
+Test case generation
+Code performance optimization
+

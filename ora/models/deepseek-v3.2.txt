@@ -1,0 +1,275 @@
+python----
+
+
+
+
+from openai import OpenAI
+
+client = OpenAI(
+  base_url = "https://integrate.api.nvidia.com/v1",
+  api_key = "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"
+)
+
+completion = client.chat.completions.create(
+  model="deepseek-ai/deepseek-v3.2",
+  messages=[{"role":"user","content":""}],
+  temperature=1,
+  top_p=0.95,
+  max_tokens=8192,
+  extra_body={"chat_template_kwargs": {"thinking":True}},
+  stream=True
+)
+
+for chunk in completion:
+  if not getattr(chunk, "choices", None):
+    continue
+  reasoning = getattr(chunk.choices[0].delta, "reasoning_content", None)
+  if reasoning:
+    print(reasoning, end="")
+  if chunk.choices and chunk.choices[0].delta.content is not None:
+    print(chunk.choices[0].delta.content, end="")
+  
+
+
+
+
+  
+
+
+
+LANG-------
+
+
+from langchain_nvidia_ai_endpoints import ChatNVIDIA
+
+client = ChatNVIDIA(
+  model="deepseek-ai/deepseek-v3.2",
+  api_key="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", 
+  temperature=1,
+  top_p=0.95,
+  max_tokens=8192,
+  extra_body={"chat_template_kwargs": {"thinking":True}},
+)
+
+for chunk in client.stream([{"role":"user","content":""}]):
+  
+    if chunk.additional_kwargs and "reasoning_content" in chunk.additional_kwargs:
+      print(chunk.additional_kwargs["reasoning_content"], end="")
+  
+    print(chunk.content, end="")
+
+
+
+
+
+
+
+
+
+
+
+
+
+NODE-------
+
+
+
+
+
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  apiKey: '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',
+  baseURL: 'https://integrate.api.nvidia.com/v1',
+})
+ 
+async function main() {
+  const completion = await openai.chat.completions.create({
+    model: "deepseek-ai/deepseek-v3.2",
+    messages: [{"role":"user","content":""}],
+    temperature: 1,
+    top_p: 0.95,
+    max_tokens: 8192,
+    chat_template_kwargs: {"thinking":true},
+    stream: true
+  })
+   
+  for await (const chunk of completion) {
+        const reasoning = chunk.choices[0]?.delta?.reasoning_content;
+    if (reasoning) process.stdout.write(reasoning);
+        process.stdout.write(chunk.choices[0]?.delta?.content || '')
+    
+  }
+  
+}
+
+main();
+
+
+
+
+SHELL----
+
+
+invoke_url='https://integrate.api.nvidia.com/v1/chat/completions'
+
+authorization_header='Authorization: Bearer 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'
+accept_header='Accept: application/json'
+content_type_header='Content-Type: application/json'
+
+data=$'{
+  "model": "deepseek-ai/deepseek-v3.2",
+  "messages": [
+    {
+      "role": "user",
+      "content": ""
+    }
+  ],
+  "temperature": 1,
+  "top_p": 0.95,
+  "max_tokens": 8192,
+  "seed": 42,
+  "stream": true,
+  "chat_template_kwargs": {
+    "thinking": true
+  }
+}'
+
+response=$(curl --silent -i -w "\n%{http_code}" --request POST \
+  --url "$invoke_url" \
+  --header "$authorization_header" \
+  --header "$accept_header" \
+  --header "$content_type_header" \
+  --data "$data"
+)
+
+echo "$response"
+
+
+
+
+DeepSeek-V3.2
+Description
+DeepSeek-V3.2 is a state-of-the-art large language model that harmonizes high computational efficiency with superior reasoning and agentic AI performance through DeepSeek Sparse Attention (DSA) and scalable reinforcement learning. The model achieves gold-medal performance in the 2025 International Mathematical Olympiad (IMO) and International Olympiad in Informatics (IOI), performing comparably to GPT-5.
+
+This model is ready for commercial/non-commercial use.
+
+Third-Party Community Consideration:
+This model is not owned or developed by NVIDIA. This model has been developed and built to a third-party's requirements for this application and use case; see link to Non-NVIDIA DeepSeek-V3.2 Model Card
+
+License and Terms of Use:
+GOVERNING TERMS: This trial service is governed by the NVIDIA API Trial Terms of Service. Use of this model is governed by the NVIDIA Community Model License. Additional Information: MIT License.
+
+Deployment Geography:
+Global
+
+Use Case:
+Use Case: DeepSeek-V3.2 is designed for advanced reasoning tasks, agentic AI applications, tool use scenarios, and complex problem-solving in domains requiring high computational reasoning such as mathematics, programming competitions, and enterprise AI assistants. The model integrates reasoning into tool-use scenarios through a large-scale agentic task synthesis pipeline.
+
+Release Date:
+Build.NVIDIA.com: 12/16/2025 via link
+Huggingface: 12/01/2025 via link
+
+Reference(s):
+References:
+
+DeepSeek-V3.2 Technical Report
+DeepSeek-V3.2-Exp Base Model
+DeepSeek Chat Interface
+DeepSeek Discord Community
+Olympiad Case Files - IMO 2025, IOI 2025, ICPC World Finals, CMO 2025 submissions
+DeepSeek-V3.2 Variants
+Model Architecture:
+Architecture Type: Transformer
+Network Architecture: DeepSeek Sparse Attention MoE
+Total Parameters: 685B
+Base Model: DeepSeek-V3.2-Exp-Base
+
+Input:
+Input Types: Text
+Input Formats: String
+Input Parameters: One Dimensional (1D)
+Other Input Properties: Supports multi-turn conversations with system prompts, user messages, and assistant responses. Includes a new "developer" role exclusively for search agent scenarios. Utilizes an updated chat template with "thinking with tools" capability.
+
+Output:
+Output Types: Text
+Output Format: String
+Output Parameters: One Dimensional (1D)
+Other Output Properties: Supports structured JSON output, function/tool calling, and reasoning content. Output can include explicit "thinking" traces when enabled via reasoning_content parameter.
+
+Our AI models are designed and/or optimized to run on NVIDIA GPU-accelerated systems. By leveraging NVIDIA's hardware (e.g. GPU cores) and software frameworks (e.g., CUDA libraries), the model achieves faster training and inference times compared to CPU-only solutions.
+
+Software Integration:
+Runtime Engines:
+
+Other (Transformers): Compatible with Hugging Face Transformers library
+Other (vLLM): Recommended for efficient inference with DSA support
+Supported Hardware:
+
+NVIDIA Blackwell: B200
+NVIDIA Hopper: H100, H200
+Operating Systems: Linux
+
+Additional Testing Statement: The integration of foundation and fine-tuned models into AI systems requires additional testing using use-case-specific data to ensure safe and effective deployment. Following the V-model methodology, iterative testing and validation at both unit and system levels are essential to mitigate risks, meet technical and functional requirements, and ensure compliance with safety and ethical standards before deployment.
+
+Model Version(s)
+DeepSeek-V3.2 (2025)
+
+Training, Testing, and Evaluation Datasets:
+Training Dataset
+Data Modality: Text
+Training Data Collection: Undisclosed
+Training Labeling: Undisclosed
+Training Properties: The model was trained using a scalable reinforcement learning framework with robust RL protocol and post-training compute scaling.
+
+Testing Dataset
+Testing Data Collection: Undisclosed
+Testing Labeling: Undisclosed
+Testing Properties: Undisclosed
+
+Evaluation Dataset
+Evaluation Benchmark Score: Undisclosed
+Evaluation Data Collection: Automated
+Evaluation Labeling: Human
+Evaluation Properties: Evaluated on competitive programming (IOI 2025, ICPC World Finals), mathematical reasoning (IMO 2025, CMO 2025), and general reasoning benchmarks comparing against frontier models like GPT-5 and Gemini-3.0-Pro.
+
+Inference
+Acceleration Engine: Transformers, vLLM with DeepSeek Sparse Attention optimization
+Test Hardware: The model is deployable on NVIDIA H100 and H200 GPUs. Precision formats available include FP8, BF16, F32, and F8_E4M3 for optimized inference.
+
+Additional Details
+Recommended Deployment Settings
+For local deployment, recommended sampling parameters:
+
+Temperature: 1.0
+Top_p: 0.95
+Key Technical Innovations
+1. DeepSeek Sparse Attention (DSA) An efficient attention mechanism that substantially reduces computational complexity while preserving model performance, specifically optimized for long-context scenarios.
+
+2. Scalable Reinforcement Learning Framework Robust RL protocol with scaled post-training compute enables performance comparable to GPT-5. The high-compute variant (DeepSeek-V3.2-Speciale) surpasses GPT-5.
+
+3. Large-Scale Agentic Task Synthesis Pipeline Novel synthesis pipeline that systematically generates training data at scale to integrate reasoning into tool-use scenarios, improving compliance and generalization in complex interactive environments.
+
+Chat Template
+DeepSeek-V3.2 introduces significant updates to its chat template compared to prior versions:
+
+Revised format for tool calling
+Introduction of "thinking with tools" capability
+New developer role exclusively for search agent scenarios (not accepted in official API)
+Important Note: This release does not include a Jinja-format chat template. Refer to the Python encoding scripts in the encoding/ folder of the model repository for message encoding and parsing.
+
+Model Variants
+DeepSeek-V3.2-Speciale A high-compute variant designed exclusively for deep reasoning tasks. Important limitations:
+
+Does not support tool-calling functionality
+Optimized solely for reasoning-intensive applications
+Surpasses GPT-5 in reasoning benchmarks
+Olympiad Performance
+The model includes verified final submissions for:
+
+IOI 2025 (International Olympiad in Informatics) - Gold medal
+IMO 2025 (International Mathematical Olympiad) - Gold medal
+ICPC World Finals (International Collegiate Programming Contest)
+CMO 2025 (Chinese Mathematical Olympiad)
+Submission files are available in the repository's assets/olympiad_cases folder for community verification
+

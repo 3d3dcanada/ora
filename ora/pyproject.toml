@@ -1,0 +1,56 @@
+[project]
+name = "ora"
+version = "0.1.0"
+description = "OrA — Autonomous AI Command Center"
+requires-python = ">=3.12"
+dependencies = [
+    "textual>=7.0.0",
+    "rich>=14.0.0",
+    "psutil>=6.0.0",
+    "litellm>=1.50.0",
+    "httpx>=0.27.0",
+    "aiohttp>=3.9.0",
+    "mem0ai>=0.1.0",
+    "qdrant-client>=1.9.0",
+    "langgraph>=0.2.0",
+    "langchain>=0.3.0",
+    "langchain-openai>=0.2.0",
+    "aiofiles>=24.1.0",
+    "pydantic>=2.0.0",
+    "pydantic-settings>=2.0.0",
+    "python-dotenv>=1.0.0",
+    "fastapi>=0.104.0",
+    "uvicorn>=0.24.0",
+    "websockets>=12.0",
+    "sqlalchemy>=2.0.0",
+    "cryptography>=42.0.0",
+    "docker>=6.0.0",
+    "redis>=5.0.0",
+]
+
+[project.scripts]
+ora-tui = "tui.__main__:main"
+ora-backend = "backend.main:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["tui", "backend"]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "black>=23.0.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0.0",
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+
+[tool.black]
+line-length = 88
+target-version = ['py312']

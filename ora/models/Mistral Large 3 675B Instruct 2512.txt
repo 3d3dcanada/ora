@@ -1,0 +1,350 @@
+python----
+
+
+
+
+import requests, base64
+
+invoke_url = "https://integrate.api.nvidia.com/v1/chat/completions"
+stream = True
+
+
+headers = {
+  "Authorization": "Bearer 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",
+  "Accept": "text/event-stream" if stream else "application/json"
+}
+
+payload = {
+  "model": "mistralai/mistral-large-3-675b-instruct-2512",
+  "messages": [{"role":"user","content":""}],
+  "max_tokens": 2048,
+  "temperature": 0.15,
+  "top_p": 1.00,
+  "frequency_penalty": 0.00,
+  "presence_penalty": 0.00,
+  "stream": stream
+}
+
+
+
+response = requests.post(invoke_url, headers=headers, json=payload)
+
+if stream:
+    for line in response.iter_lines():
+        if line:
+            print(line.decode("utf-8"))
+else:
+    print(response.json())
+ 
+
+
+
+
+
+
+  
+
+
+
+LANG-------
+
+
+
+
+
+
+
+
+
+NODE-------
+
+
+
+import axios from 'axios';
+import { readFile } from 'node:fs/promises';
+
+const invokeUrl = "https://integrate.api.nvidia.com/v1/chat/completions";
+const stream = true;
+
+const headers = {
+  "Authorization": "Bearer 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",
+  "Accept": stream ? "text/event-stream" : "application/json"
+};
+
+
+const payload = {
+  "model": "mistralai/mistral-large-3-675b-instruct-2512",
+  "messages": [{"role":"user","content":""}],
+  "max_tokens": 2048,
+  "temperature": 0.15,
+  "top_p": 1.00,
+  "frequency_penalty": 0.00,
+  "presence_penalty": 0.00,
+  "stream": stream
+};
+
+Promise.resolve(
+  axios.post(invokeUrl, payload, {
+    headers: headers,
+    responseType: stream ? 'stream' : 'json'
+  })
+)
+
+  .then(response => {
+    if (stream) {
+      response.data.on('data', (chunk) => {
+        console.log(chunk.toString());
+      });
+    } else {
+      console.log(JSON.stringify(response.data));
+    }
+  })
+  .catch(error => {
+    console.error(error);
+  });
+
+
+
+SHELL----
+
+
+stream=true
+
+if [ "$stream" = true ]; then
+    accept_header='Accept: text/event-stream'
+else
+    accept_header='Accept: application/json'
+fi
+
+
+echo '{
+  "model": "mistralai/mistral-large-3-675b-instruct-2512",
+  "messages": [{"role":"user","content":""}],
+  "max_tokens": 2048,
+  "temperature": 0.15,
+  "top_p": 1.00,
+  "frequency_penalty": 0.00,
+  "presence_penalty": 0.00,
+  "stream": true
+}' > payload.json
+
+curl https://integrate.api.nvidia.com/v1/chat/completions \
+  -H "Authorization: Bearer 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" \
+  -H "Content-Type: application/json" \
+  -H "$accept_header" \
+  -d @payload.json
+
+
+
+Mistral Large 3 675B Instruct 2512
+Description
+Mistral Large 3 675B Instruct 2512 is a state-of-the-art general-purpose multimodal granular Mixture-of-Experts model with 41B active parameters and 675B total parameters, trained from the ground up with 3000 H200s. This instruct post-trained version in FP8 precision is fine-tuned for instruction tasks, making it ideal for chat, agentic, and instruction-based use cases. Designed for reliability and long-context comprehension, it is engineered for production-grade assistants, retrieval-augmented systems, scientific workloads, and complex enterprise workflows.
+
+This model is ready for commercial/non-commercial use.
+
+Third-Party Community Consideration:
+This model is not owned or developed by NVIDIA. This model has been developed and built to a third-party's requirements for this application and use case; see link to Non-NVIDIA Mistral Large 3 675B Instruct 2512 Model Card
+
+License and Terms of Use:
+GOVERNING TERMS: This trial service is governed by the NVIDIA API Trial Terms of Service. Use of this model is governed by the NVIDIA Community Model License. Additional Information: Apache License Version 2.0.
+
+Deployment Geography:
+Global
+
+Use Case:
+Use Case: Designed for enterprise-grade applications including long document understanding, powerful daily-driver AI assistants, state-of-the-art agentic and tool-use capabilities, enterprise knowledge work, and general coding assistance. Engineered for production-grade assistants, retrieval-augmented systems, scientific workloads, and complex enterprise workflows with powerful long-context performance and stable cross-domain behavior.
+
+Release Date:
+Build.NVIDIA.com: 12/2025 via link
+Huggingface: 12/2025 via link
+
+Reference(s):
+References:
+
+vLLM Framework
+Mistral Common Library
+System Prompt Configuration
+FP8 Quantized Version
+NVFP4 Quantized Version
+Eagle Draft Model for Speculative Decoding
+Model Architecture:
+Architecture Type: Transformer
+Network Architecture: Granular Mixture-of-Experts (MoE) with Vision Encoder (673B Language Model + 2.5B Vision Encoder)
+Total Parameters: 675B
+Active Parameters: 41B (39B language model active parameters + 2.5B vision encoder)
+Base Model: mistralai/Mistral-Large-3-675B-Base-2512
+
+Input:
+Input Types: Image, Text
+Input Formats: Red, Green, Blue (RGB), String
+Input Parameters: Two Dimensional (2D), One Dimensional (1D)
+Other Input Properties: Supports multimodal input with vision capabilities for image analysis. Images should maintain aspect ratio close to 1:1 (width-to-height) for optimal performance. Text inputs support multilingual content (English, French, Spanish, German, Italian, Portuguese, Dutch, Chinese, Japanese, Korean, Arabic). Recommended system prompt configuration available in repository. Supports tools/function calling with recommendation to keep tool set well-defined and limited.
+Input Context Length (ISL): 262,144 (256k)
+
+Output:
+Output Types: Text
+Output Format: String
+Output Parameters: One Dimensional (1D)
+Other Output Properties: Supports native function calling and JSON output formatting. Best results achieved with temperature below 0.1 for daily-driver and production environments. Strong system prompt adherence. Best-in-class agentic capabilities with tool use.
+Output Context Length (OSL): Undisclosed
+
+Our AI models are designed and/or optimized to run on NVIDIA GPU-accelerated systems. By leveraging NVIDIA's hardware (e.g. GPU cores) and software frameworks (e.g., CUDA libraries), the model achieves faster training and inference times compared to CPU-only solutions.
+
+Software Integration:
+Runtime Engines:
+
+vLLM: Latest version (recommended, install from nightly wheels)
+Transformers: Not yet available (community contribution welcome)
+Supported Hardware:
+
+NVIDIA Ampere: A100 (single node, NVFP4)
+NVIDIA Blackwell: B200 (single node, FP8)
+NVIDIA Hopper: H100 (single node, NVFP4), H200 (single node, FP8)
+Operating Systems: Linux
+
+Additional Testing Statement: The integration of foundation and fine-tuned models into AI systems requires additional testing using use-case-specific data to ensure safe and effective deployment. Following the V-model methodology, iterative testing and validation at both unit and system levels are essential to mitigate risks, meet technical and functional requirements, and ensure compliance with safety and ethical standards before deployment.
+
+Model Version(s)
+v1.0 (December 2025)
+
+Training, Testing, and Evaluation Datasets:
+Training Dataset
+Data Modality: Undisclosed
+Training Data Collection: Undisclosed
+Training Labeling: Undisclosed
+Training Properties: Undisclosed
+
+Testing Dataset
+Testing Data Collection: Undisclosed
+Testing Labeling: Undisclosed
+Testing Properties: Undisclosed
+
+Evaluation Dataset
+Evaluation Benchmark Score: Benchmark results are provided in the Mistral Large 3 675B Instruct 2512 Model Card comparing Mistral Large 3 675B to similar sized models across text and vision tasks. Specific scores vary by benchmark.
+
+View Detailed Benchmark Results
+Evaluation Data Collection: Automated
+Evaluation Labeling: Automated
+Evaluation Properties: Standard industry benchmarks for text and vision tasks. Complete benchmark results available in the source model card linked above.
+
+Inference
+Acceleration Engine: Other (vLLM with mistral-common tokenizer)
+Test Hardware: Deployable on-premises on a single node using FP8 quantization (NVIDIA B200, H200) or NVFP4 quantization (NVIDIA H100, A100). Full BF16 deployment requires multi-node configuration.
+
+Additional Details
+Known Limitations
+Not a dedicated reasoning model: Dedicated reasoning models can outperform Mistral Large 3 in strict reasoning use cases.
+Behind vision-first models in multimodal tasks: Mistral Large 3 can lag behind models optimized specifically for vision tasks and use cases.
+Complex deployment: Due to its large size (675B parameters) and architecture, the model can be challenging to deploy efficiently with constrained resources or at scale.
+Recommended Deployment Settings
+Mistral recommends deploying Large 3 in a client-server configuration with the following best practices:
+
+System Prompt: Define a clear environment and use case, including guidance on how to effectively leverage tools in agentic systems.
+Sampling Parameters: Use a temperature below 0.1 for daily-driver and production environments. Higher temperatures may be explored for creative use cases - developers are encouraged to experiment with alternative settings.
+Tools: Keep the set of tools well-defined and limit their number to the minimum required for the use case. Avoid overloading the model with an excessive number of tools.
+Vision: When deploying with vision capabilities, maintain an aspect ratio close to 1:1 (width-to-height) for images. Avoid the use of overly thin or wide images - crop them as needed to ensure optimal performance.
+Deployment Options
+The model supports two quantization formats for single-node deployment:
+
+FP8 Quantization: Optimized for NVIDIA B200 and H200 GPUs. Delivers maximum throughput for production workloads with full 256k context window support. The Mistral Large 3 Instruct FP8 format can be used on one 8xH200 node. We recommend to use this format if you plan to fine-tuning as it can be more precise than NVFP4 in some situations.
+NVFP4 Quantization: Enables deployment on NVIDIA H100 and A100 GPUs. Provides efficient inference with reduced memory footprint on more widely available architectures.
+Usage
+The model can be used with the following frameworks:
+
+vllm (recommended): See vLLM section below
+NOTE
+We sadly didn't have enough time to add Mistral Large 3 to transformers, but we would be very happy for a community contribution by opening a PR to huggingface/transformers.
+
+Note 1: We recommend using a relatively low temperature, such as temperature=0.15.
+
+Note 2: Make sure to add a system prompt to the model to best tailor it to your needs. If you want to use the model as a general assistant, we recommend to use the one provided in the SYSTEM_PROMPT.txt file.
+
+vLLM (recommended)
+We recommend using this model with vLLM.
+
+Installation
+
+Make sure to install the most recent vLLM:
+
+Bash
+
+Copy
+uv pip install -U vllm \
+    --torch-backend=auto \
+    --extra-index-url https://wheels.vllm.ai/nightly
+Doing so should automatically install mistral_common >= 1.8.6.
+
+To check:
+
+Bash
+
+Copy
+python -c "import mistral_common; print(mistral_common.__version__)"
+You can also make use of a ready-to-go docker image or on the docker hub.
+
+Serve
+
+We recommend that you use Mistral Large 3 675B in a server/client setting.
+
+Spin up a server (FP8 quantization for single-node B200/H200 deployment):
+Simple
+
+A simple launch command is:
+
+Bash
+
+Copy
+vllm serve mistralai/Mistral-Large-3-675B-Instruct-2512 \
+  --tensor-parallel-size 8 \
+  --tokenizer_mode mistral --config_format mistral --load_format mistral \
+  --enable-auto-tool-choice --tool-call-parser mistral
+Key parameter notes:
+
+enable-auto-tool-choice: Required when enabling tool usage.
+tool-call-parser mistral: Required when enabling tool usage.
+Additional flags:
+
+You can set --max-model-len to preserve memory. By default it is set to 262144 which is quite large but not necessary for most scenarios.
+You can set --max-num-batched-tokens to balance throughput and latency, higher means higher throughput but higher latency.
+Accelerated with speculative decoding
+
+For maximum performance we recommend serving the checkpoint with its customized draft model Mistral-Large-3-675B-Instruct-2512-Eagle:
+
+Bash
+
+Copy
+vllm serve mistralai/Mistral-Large-3-675B-Instruct-2512 \
+  --tensor-parallel-size 8 \
+  --load-format mistral \
+  --tokenizer-mode mistral \
+  --config-format mistral \
+  --enable-auto-tool-choice \
+  --tool-call-parser mistral \
+  --limit-mm-per-prompt '{"image": 10}' \
+  --speculative_config '{
+    "model": "mistralai/Mistral-Large-3-675B-Instruct-2512-Eagle",
+    "num_speculative_tokens": 3,
+    "method": "eagle",
+    "max_model_len": "16384"
+  }'
+For more information on the draft model, please have a look at Mistral-Large-3-675B-Instruct-2512-Eagle.
+
+Note: Mistral Large 3 675B is optimized for single-node deployment using FP8 quantization (NVIDIA B200, H200) or NVFP4 quantization (NVIDIA H100, A100). Full BF16 requires multi-node setup.
+
+To ping the client you can use a simple Python snippet. See the following examples.
+Vision reasoning
+
+Leverage the vision capabilities of Mistral Large 3 675B to analyze images and provide insights:
+
+Python snippet
+Function calling
+
+Mistral Large 3 675B offers best-in-class agentic capabilities with native function calling:
+
+Python snippet
+Instruction following
+
+Mistral Large 3 can follow your instructions down to the letter.
+
+Python snippet
+

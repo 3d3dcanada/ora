@@ -1,0 +1,78 @@
+model_list:
+  # Primary NVIDIA NIM models with different API keys for load balancing
+  # NVIDIA Rate Limit: Up to 40 rpm per key
+  - model_name: minimax-m2.1-key1
+    litellm_params:
+      model: "nvidia_nim/minimaxai/minimax-m2.1"
+      api_key: "os.environ/NVIDIA_API_KEY"
+      api_base: "https://integrate.api.nvidia.com/v1"
+
+  - model_name: minimax-m2.1-key2
+    litellm_params:
+      model: "nvidia_nim/minimaxai/minimax-m2.1"
+      api_key: "os.environ/NVIDIA_API_KEY_2"
+      api_base: "https://integrate.api.nvidia.com/v1"
+
+  - model_name: minimax-m2.1-key3
+    litellm_params:
+      model: "nvidia_nim/minimaxai/minimax-m2.1"
+      api_key: "os.environ/NVIDIA_API_KEY_3"
+      api_base: "https://integrate.api.nvidia.com/v1"
+
+  - model_name: minimax-m2.1-key4
+    litellm_params:
+      model: "nvidia_nim/minimaxai/minimax-m2.1"
+      api_key: "os.environ/NVIDIA_API_KEY_4"
+      api_base: "https://integrate.api.nvidia.com/v1"
+
+  - model_name: minimax-m2.1-key5
+    litellm_params:
+      model: "nvidia_nim/minimaxai/minimax-m2.1"
+      api_key: "os.environ/NVIDIA_API_KEY_5"
+      api_base: "https://integrate.api.nvidia.com/v1"
+
+  - model_name: minimax-m2.1-key6
+    litellm_params:
+      model: "nvidia_nim/minimaxai/minimax-m2.1"
+      api_key: "os.environ/NVIDIA_API_KEY_6"
+      api_base: "https://integrate.api.nvidia.com/v1"
+
+  - model_name: minimax-m2.1-key7
+    litellm_params:
+      model: "nvidia_nim/minimaxai/minimax-m2.1"
+      api_key: "os.environ/NVIDIA_API_KEY_7"
+      api_base: "https://integrate.api.nvidia.com/v1"
+
+  - model_name: minimax-m2.1-key8
+    litellm_params:
+      model: "nvidia_nim/minimaxai/minimax-m2.1"
+      api_key: "os.environ/NVIDIA_API_KEY_8"
+      api_base: "https://integrate.api.nvidia.com/v1"
+
+  # Fallback 1: Anthropic Claude 3.5 Sonnet
+  - model_name: claude-sonnet
+    litellm_params:
+      model: "claude-3-5-sonnet-20241022"
+      api_key: "os.environ/ANTHROPIC_API_KEY"
+
+  # Fallback 2: OpenAI (if available)
+  - model_name: gpt-4o-mini
+    litellm_params:
+      model: "gpt-4o-mini"
+      api_key: "os.environ/OPENAI_API_KEY"
+
+litellm_settings:
+  num_retries: 3
+  request_timeout: 60
+  fallbacks:
+    - minimax-m2.1-key1: ["minimax-m2.1-key2", "minimax-m2.1-key3", "minimax-m2.1-key4", "minimax-m2.1-key5", "minimax-m2.1-key6", "minimax-m2.1-key7", "minimax-m2.1-key8", "claude-sonnet", "gpt-4o-mini"]
+  allowed_fails: 3
+  cooldown_time: -1  # Disable cooldown, use rate limiting instead
+  rate_limit: 40  # 40 requests per minute per key (NVIDIA limit)
+  rate_limit_strategy: "round-robin"  # Distribute requests across keys
+
+router_settings:
+  routing_strategy: "latency-based"  # Smart routing based on latency
+  num_retries: 2
+  retry_delay: 0.5
+  timeout: 30

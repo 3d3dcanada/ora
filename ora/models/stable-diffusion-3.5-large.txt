@@ -1,0 +1,160 @@
+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
+Select your target environment
+
+Linux with Docker
+Deploying your application in production? Get started with a 90-day evaluation of NVIDIA AI Enterprise
+Get NVIDIA AI Enterprise
+Follow the steps below to download and run the NVIDIA NIM inference microservice for this model on your infrastructure of choice.
+
+Step 1
+Get Credentials
+Get API Key
+To access Stable Diffusion 3.5 Large model read and accept Stable Diffusion 3.5 Large, Stable Diffusion 3.5 Large TensorRT and Stable Diffusion 3.5 Large ControlNet TensorRT License Agreements and Acceptable Use Policy.
+
+Create a new Hugging Face token with Read access to contents of all public gated repos you can access permission.
+
+Export your personal credentials as environment variables:
+
+Bash
+
+Copy
+export NGC_API_KEY=<PASTE_API_KEY_HERE>
+export HF_TOKEN=<PASTE_HUGGING_FACE_TOKEN_HERE>
+Step 2
+Pull and Run the NIM
+Login to NVIDIA NGC so that you can pull the NIM container:
+
+Bash
+
+Copy
+echo "$NGC_API_KEY" | docker login nvcr.io --username '$oauthtoken' --password-stdin
+Pull and run the NIM with the command below.
+
+Bash
+
+Copy
+# Create the cache directory on the host machine.
+export LOCAL_NIM_CACHE=~/.cache/nim
+mkdir -p "$LOCAL_NIM_CACHE"
+chmod 777 $LOCAL_NIM_CACHE
+                        
+docker run -it --rm --name=nim-server \
+  --runtime=nvidia --gpus='"device=0"' \
+  -e NGC_API_KEY=$NGC_API_KEY \
+  -e HF_TOKEN=$HF_TOKEN \
+  -p 8000:8000 \
+  -v "$LOCAL_NIM_CACHE:/opt/nim/.cache/" \
+  nvcr.io/nim/stabilityai/stable-diffusion-3.5-large:latest
+You can specify the desired variant of Stable Diffusion 3.5 Large by adding -e NIM_MODEL_VARIANT=<your variant>. Available variants are base, base+canny, base+depth and base+canny+depth.
+
+When you run the preceding command, the container downloads the model, initializes a NIM inference pipeline, and performs a pipeline warm up. A pipeline warm up typically requires up to three minutes. The warm up is complete when the container logs show Pipeline warmup: start/done.
+
+Step 3
+Test the NIM
+Bash
+
+Copy
+invoke_url="http://localhost:8000/v1/infer"
+
+output_image_path="result.jpg"
+
+response=$(curl -X POST $invoke_url \
+    -H "Accept: application/json" \
+    -H "Content-Type: application/json" \
+    -d '{
+          "prompt": "A simple coffee shop interior",
+          "mode": "base",
+          "seed": 0, 
+          "steps": 30 
+        }')
+response_body=$(echo "$response" | awk '/{/,EOF-1')
+echo $response_body | jq .artifacts[0].base64 | tr -d '"' | base64 --decode > $output_image_path
+For more details on getting started with this NIM including configuring using parameters, visit the Visual GenAI NIM docs.
+
+
+
+
+Overview
+Description:
+Stable Diffusion 3.5 is an 8B parameter base model that produces high-quality images, with Depth and Canny ControlNets offering controllability over image outputs. Choose this model when you want high quality, artistic style, and more fine-tuning flexibility.
+
+This model is ready for non-commercial use. Contact Stability AI at https://stability.ai/enterprise for commercial use of Stable Diffusion 3.5 Large model.
+
+Third-Party Community Consideration:
+This model is not owned or developed by NVIDIA. This model has been developed and built to a third-party’s requirements for this application and use case; see links to:
+
+stabilityai/stable-diffusion-3.5-large Model Card
+stabilityai/stable-diffusion-3.5-large-controlnet-canny Model Card
+stabilityai/stable-diffusion-3.5-large-controlnet-depth Model Card
+LiheYoung/Depth-anything-large-hf Model Card
+License/Terms of Use
+GOVERNING TERMS: The trial service is governed by the NVIDIA API Trial Terms of Service, and use of the Cosmos model is governed by the NVIDIA Community Model License Agreement. Contact Stability AI at https://stability.ai/enterprise for commercial use of Stable Diffusion 3.5 Large model. ADDITIONAL INFORMATION: Llama 2 Community Model License Agreement and Apache License, Version 2.0.
+
+Deployment Geography:
+Global
+
+Use Case:
+Creators and professionals can use this model to generate high-quality images from text prompts, simplifying visual communication.
+
+Release Date:
+Build.Nvidia.com August 11, 2025 via https://build.nvidia.com/stabilityai/stable-diffusion-3_5-large
+Huggingface October 22, 2024 via https://huggingface.co/stabilityai/stable-diffusion-3.5-large
+References
+Stable Diffusion 3.5 blog post
+Model Architecture:
+Architecture Type: Transformer and Convolutional Neural Network (CNN)
+Network Architecture: Diffusion Transformer
+LiheYoung/Depth-anything-large-hf leverages the DPT architecture with a DINOv2 backbone.
+
+Input:
+Input Type: Text, Image (optional)
+Input Parameters: Text: One-Dimensional (1D); Image: Two-Dimensional (2D) Input Format: Text: String. Image: Red, Green, Blue (RGB)
+Other Properties Related to Input: Steps, Classifier-Free Guidance Scale, Output Image Aspect Ratio, and Seed
+
+Output:
+Output Type: Image
+Output Parameters: Two-Dimensional (2D) Output Format: Red, Green, Blue (RGB)
+Other Properties Related to Output: Supported resolutions 1024x1024, 768x1344, 1344x768, 1344x768, 1344x768, 1344x768, 1216x832
+
+Software Integration:
+Runtime Engines:
+
+TensorRT
+Supported Hardware Platforms:
+
+NVIDIA Blackwell
+NVIDIA Hopper
+NVIDIA Lovelace
+Supported Operating Systems: Linux, Windows Subsystem for Linux
+
+The integration of foundation and fine-tuned models into AI systems requires additional testing using use-case-specific data to ensure safe and effective deployment. Following the V-model methodology, iterative testing and validation at both unit and system levels are essential to mitigate risks, meet technical and functional requirements, and ensure compliance with safety and ethical standards before deployment.
+
+Model Versions:
+Stable Diffusion 3.5 Large
+Stable Diffusion 3.5 Large Controlnet - Canny
+Stable Diffusion 3.5 Large Controlnet - Depth
+LiheYoung/Depth-anything-large-hf
+Training, Testing, and Evaluation Datasets:
+Training Dataset:
+Data Collection Method by dataset: Undisclosed
+Labeling Method by dataset: Undisclosed
+Properties (Quantity, Dataset Descriptions, Sensor(s)): Undisclosed
+
+Testing Dataset:
+Data Collection Method by dataset: Undisclosed
+Labeling Method by dataset: Undisclosed
+Properties (Quantity, Dataset Descriptions, Sensor(s)): Undisclosed
+
+Evaluation Dataset:
+Data Collection Method by dataset: Undisclosed
+Labeling Method by dataset: Undisclosed
+Properties (Quantity, Dataset Descriptions, Sensor(s)): Undisclosed
+
+Inference:
+Engine: TensorRT
+Test Hardware: H100
+
+Ethical Considerations:
+NVIDIA believes Trustworthy AI is a shared responsibility and we have established policies and practices to enable development for a wide array of AI applications. When downloaded or used in accordance with our terms of service, developers should work with their internal model team to ensure this model meets requirements for the relevant industry and use case and addresses unforeseen product misuse.
+
+

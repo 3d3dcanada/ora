@@ -1,0 +1,224 @@
+python----
+
+
+
+from openai import OpenAI
+import json
+
+client = OpenAI(
+  base_url="https://integrate.api.nvidia.com/v1",
+  api_key="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"
+)
+
+completion = client.chat.completions.create(
+  model="stepfun-ai/step-3.5-flash",
+  messages=[{"role":"user","content":""}],
+  temperature=1,
+  top_p=0.9,
+  max_tokens=16384,
+  stream=True
+)
+
+
+for chunk in completion:
+  if not getattr(chunk, "choices", None):
+    continue
+  reasoning = getattr(chunk.choices[0].delta, "reasoning_content", None)
+  if reasoning:
+    print(reasoning, end="")
+  if chunk.choices[0].delta.content:
+    print(chunk.choices[0].delta.content, end="")
+
+
+
+
+
+LANG-------
+
+
+from langchain_nvidia_ai_endpoints import ChatNVIDIA
+
+client = ChatNVIDIA(
+  model="stepfun-ai/step-3.5-flash",
+  api_key="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",
+  temperature=1,
+  top_p=0.9,
+  max_tokens=16384,
+)
+
+for chunk in client.stream([{"role":"user","content":""}]):
+  if chunk.additional_kwargs and "reasoning_content" in chunk.additional_kwargs:
+    print(chunk.additional_kwargs["reasoning_content"], end="")
+  print(chunk.content, end="")
+
+
+
+
+
+
+NODE-------
+
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  apiKey: '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',
+  baseURL: 'https://integrate.api.nvidia.com/v1',
+});
+
+async function main() {
+  const completion = await openai.chat.completions.create({
+    model: "stepfun-ai/step-3.5-flash",
+    messages: [{"role":"user","content":""}],
+    temperature: 1,
+    top_p: 0.9,
+    max_tokens: 16384,
+    stream: true
+  });
+
+  
+  for await (const chunk of completion) {
+    const delta = chunk.choices[0]?.delta;
+
+    const reasoning = delta?.reasoning_content;
+    if (reasoning) {
+      process.stdout.write(reasoning);
+    }
+
+    if (delta?.content) {
+      process.stdout.write(delta.content);
+    }
+  }
+  
+}
+
+main().catch(console.error);
+
+
+SHELL----
+
+
+curl 'https://integrate.api.nvidia.com/v1/chat/completions' \
+  -H 'Content-Type: application/json' \
+  -H "Authorization: Bearer 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" \
+  -d @- <<'EOF'
+{"model":"stepfun-ai/step-3.5-flash","messages":[{"role":"user","content":""}],"temperature":1,"top_p":0.9,"max_tokens":16384,"stream":true}
+EOF
+
+
+
+
+Step 3.5 Flash
+Description
+Step 3.5 Flash is a sparse Mixture-of-Experts (MoE) large language model developed by StepFun, engineered to deliver frontier reasoning and agentic capabilities with exceptional efficiency. Built on 196.81B total parameters with only ~11B active per token, it achieves the reasoning depth of top-tier models while maintaining real-time responsiveness with 100-300 tok/s throughput (peaking at 350 tok/s for coding tasks).
+
+This model is ready for commercial/non-commercial use.
+
+Third-Party Community Consideration:
+This model is not owned or developed by NVIDIA. This model has been developed and built to a third-party's requirements for this application and use case; see link to Non-NVIDIA Step 3.5 Flash Model Card
+
+License and Terms of Use:
+GOVERNING TERMS: This trial service is governed by the NVIDIA API Trial Terms of Service. Use of this model is governed by the NVIDIA Open Model License Agreement. Additional Information: Apache License, Version 2.0.
+
+Deployment Geography:
+Global
+
+Use Case:
+Use Case: Developers and enterprises seeking a high-performance open-weight LLM for coding assistants, deep research agents, GUI automation, and complex multi-step reasoning tasks. The model is optimized for DGX Spark deployment with fast inference speeds and is particularly strong at tool-calling and agentic applications.
+
+Key Features:
+
+Sparse MoE Efficiency: 196B parameters with only ~11B active per token, combining elite intelligence with 11B-class inference speed
+MTP-3 Acceleration: 3-way Multi-Token Prediction enables 100-300 tok/s throughput, peaking at 350 tok/s for coding
+Efficient Long Context: 256K context window using 3:1 Sliding Window Attention ratio for cost-efficient processing
+Agentic Mastery: 74.4% on SWE-bench Verified, 51.0% on Terminal-Bench 2.0, 88.2 on τ²-Bench
+Release Date:
+Build.NVIDIA.com: 02/2026 via link
+Huggingface: 02/2026 via link
+
+Reference(s):
+References:
+
+StepFun HuggingFace
+StepFun Platform
+OpenRouter
+Model Architecture:
+Architecture Type: Transformer
+Network Architecture: Mixture-of-Experts
+Total Parameters: 196.81B (196B Backbone + 0.81B MTP Head)
+Active Parameters: ~11B per token
+Vocabulary Size: 128,896
+Layers: 45
+Hidden Size: 4,096
+Experts: 288 routed experts + 1 shared expert (always active), Top-8 selection per token
+Attention: 3:1 SWA ratio (three sliding-window layers per full-attention layer), window size 512
+
+Input:
+Input Types: Text
+Input Formats: String
+Input Parameters: One-Dimensional (1D)
+Other Input Properties: Supports multi-turn conversations and tool-calling formats.
+Input Context Length (ISL): 256,000
+
+Output:
+Output Types: Text
+Output Format: String
+Output Parameters: One-Dimensional (1D)
+Other Output Properties: Generates coherent responses for coding, reasoning, and general text generation tasks.
+
+Our AI models are designed and/or optimized to run on NVIDIA GPU-accelerated systems. By leveraging NVIDIA's hardware (e.g. GPU cores) and software frameworks (e.g., CUDA libraries), the model achieves faster training and inference times compared to CPU-only solutions.
+
+Software Integration:
+Integrations
+Supported inference frameworks include vLLM, SGLang, llama.cpp, and Hugging Face Transformers.
+
+Runtime Engines:
+
+vLLM:
+SGLang:
+Transformers:
+Supported Hardware:
+
+NVIDIA Ampere: A100, A10
+NVIDIA Blackwell: B100, B200
+NVIDIA Hopper: H100, H200
+Preferred Operating Systems: Linux
+
+The integration of foundation and fine-tuned models into AI systems requires additional testing using use-case-specific data to ensure safe and effective deployment. Following the V-model methodology, iterative testing and validation at both unit and system levels are essential to mitigate risks, meet technical and functional requirements, and ensure compliance with safety and ethical standards before deployment.
+
+Model Version(s)
+Step 3.5 Flash v1.0
+
+Training, Testing, and Evaluation Datasets:
+Training Dataset
+Data Modality: Text
+Training Data Collection: Undisclosed
+Training Labeling: Undisclosed
+Training Properties: Undisclosed
+
+Testing Dataset
+Testing Data Collection: Undisclosed
+Testing Labeling: Undisclosed
+Testing Properties: Undisclosed
+
+Evaluation Dataset
+Evaluation Benchmark Score: Step 3.5 Flash achieves frontier-level performance across Agency, Reasoning, and Coding benchmarks. For more information see Detailed Benchmark Comparison Table below.
+Evaluation Data Collection: Automated
+Evaluation Labeling: Hybrid: Automated, Human
+Evaluation Properties: Evaluated on industry-standard benchmarks for coding (SWE-bench Verified, LiveCodeBench-V6, Terminal-Bench 2.0), agentic capabilities (τ²-Bench, BrowseComp, GAIA, xbench-DeepSearch), and mathematical reasoning (AIME 2025, HMMT 2025, IMOAnswerBench).
+
+Detailed Benchmark Comparison Table
+Inference
+Acceleration Engine: vLLM
+Test Hardware: H100x4
+
+Recommended Inference Settings:
+
+Temperature: 1.0
+Top-p: 0.95
+Top-k: 40
+Known Limitations
+Token Efficiency. Step 3.5 Flash achieves frontier-level agentic intelligence but currently relies on longer generation trajectories than Gemini 3.0 Pro to reach comparable quality.
+Efficient Universal Mastery. We aim to unify generalist versatility with deep domain expertise. To achieve this efficiently, we are advancing variants of on-policy distillation, allowing the model to internalize expert behaviors with higher sample efficiency.
+RL for More Agentic Tasks. While Step 3.5 Flash demonstrates competitive performance on academic agentic benchmarks, the next frontier of agentic AI necessitates the application of RL to intricate, expert-level tasks found in professional work, engineering, and research.
+Operational Scope and Constraints. Step 3.5 Flash is tailored for coding and work-centric tasks, but may experience reduced stability during distribution shifts. This typically occurs in highly specialized domains or long-horizon, multi-turn dialogues, where the model may exhibit repetitive reasoning, mixed-language outputs, or inconsistencies in time and identity awareness.
+

@@ -1,0 +1,31 @@
+model_list:
+  # Primary: NVIDIA NIM - MiniMax M2.1
+  # Note: For NVIDIA NIM models in LiteLLM, use the nvidia_nim/ prefix
+  - model_name: minimax-m2.1
+    litellm_params:
+      model: "nvidia_nim/minimaxai/minimax-m2.1"
+      api_key: "os.environ/NVIDIA_API_KEY"
+      api_base: "https://integrate.api.nvidia.com/v1"
+
+  # Fallback 1: Anthropic Claude 3.5 Sonnet
+  - model_name: claude-sonnet
+    litellm_params:
+      model: "claude-3-5-sonnet-20241022"
+      api_key: "os.environ/ANTHROPIC_API_KEY"
+
+  # Fallback 2: OpenAI (if available)
+  - model_name: gpt-4o-mini
+    litellm_params:
+      model: "gpt-4o-mini"
+      api_key: "os.environ/OPENAI_API_KEY"
+
+litellm_settings:
+  num_retries: 3
+  request_timeout: 60
+  fallbacks:
+    - minimax-m2.1: ["claude-sonnet", "gpt-4o-mini"]
+  allowed_fails: 3
+  cooldown_time: 60  # 60s cooldown for rate-limited models
+
+router_settings:
+  routing_strategy: "simple-shuffle"  # Load balance across available models

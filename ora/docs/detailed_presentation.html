@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ORA - Operational Reasoning Architecture | Enterprise Multi-Agent AI OS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy-deep: #0a1628;
+            --navy-light: #1a2d4a;
+            --steel-blue: #1e3a5f;
+            --accent-blue: #0066cc;
+            --accent-hover: #0052a3;
+            --accent-cyan: #00a8cc;
+            --white: #ffffff;
+            --gray-50: #f8f9fa;
+            --gray-100: #e9ecef;
+            --gray-200: #dee2e6;
+            --gray-300: #adb5bd;
+            --gray-400: #6c757d;
+            --gray-500: #495057;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --purple: #6f42c1;
+            --teal: #20c997;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--navy-deep); color: var(--gray-100); line-height: 1.65; font-size: 16px; }
+        nav { position: fixed; top: 0; left: 0; right: 0; background: rgba(10, 22, 40, 0.97); backdrop-filter: blur(12px); z-index: 1000; padding: 0.5rem 1rem; border-bottom: 1px solid rgba(30, 58, 95, 0.6); }
+        nav ul { display: flex; list-style: none; gap: 0.2rem; flex-wrap: wrap; justify-content: center; max-width: 1600px; margin: 0 auto; }
+        nav a { color: var(--gray-300); text-decoration: none; padding: 0.35rem 0.6rem; border-radius: 4px; font-size: 0.75rem; font-weight: 500; transition: all 0.2s ease; }
+        nav a:hover { background: var(--steel-blue); color: var(--white); }
+        section { padding: 3.5rem 1.25rem; max-width: 1400px; margin: 0 auto; }
+        h1, h2, h3, h4, h5 { color: var(--white); font-weight: 600; }
+        h1 { font-size: 3rem; line-height: 1.15; }
+        h2 { font-size: 2rem; margin-bottom: 1.25rem; }
+        h3 { font-size: 1.25rem; margin-bottom: 0.6rem; }
+        h4 { font-size: 0.95rem; margin-bottom: 0.4rem; }
+        p { color: var(--gray-300); font-size: 0.95rem; }
+        .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 6rem 1.25rem 3.5rem; background: linear-gradient(145deg, var(--navy-deep) 0%, #0d1f35 50%, var(--steel-blue) 100%); position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(ellipse at 15% 75%, rgba(0, 102, 204, 0.12) 0%, transparent 50%), radial-gradient(ellipse at 85% 25%, rgba(0, 168, 204, 0.08) 0%, transparent 50%); pointer-events: none; }
+        .hero-content { position: relative; z-index: 1; }
+        .logo-container { display: flex; align-items: center; justify-content: center; gap: 1.25rem; margin-bottom: 1.25rem; }
+        .logo { width: 90px; height: 90px; background: linear-gradient(135deg, var(--accent-blue) 0%, var(--steel-blue) 100%); border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; font-weight: 700; color: var(--white); box-shadow: 0 14px 42px rgba(0, 102, 204, 0.35); }
+        .logo-text { text-align: left; }
+        .logo-text .main { font-size: 2.2rem; font-weight: 700; color: var(--white); }
+        .logo-text .sub { font-size: 0.8rem; color: var(--accent-cyan); letter-spacing: 0.12em; text-transform: uppercase; }
+        .hero h1 { margin-bottom: 0.6rem; background: linear-gradient(90deg, var(--white) 0%, var(--gray-200) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .tagline { font-size: 1.25rem; color: var(--accent-cyan); font-weight: 600; margin-bottom: 0.85rem; }
+        .subtitle { font-size: 0.95rem; color: var(--gray-300); max-width: 620px; margin: 0 auto; line-height: 1.7; }
+        .hero-stats { display: flex; justify-content: center; gap: 2.5rem; margin-top: 2rem; flex-wrap: wrap; }
+        .stat-item { text-align: center; }
+        .stat-value { font-size: 1.8rem; font-weight: 700; color: var(--accent-blue); }
+        .stat-label { font-size: 0.75rem; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.04em; }
+        #what-is-ora { background: var(--gray-50); color: var(--gray-500); }
+        #what-is-ora h2 { color: var(--navy-deep); }
+        #what-is-ora p { font-size: 1rem; max-width: 900px; margin: 0 auto; text-align: center; }
+        .highlight-box { background: var(--navy-light); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; border-left: 4px solid var(--accent-cyan); }
+        .highlight-box h4 { color: var(--accent-cyan); margin-bottom: 0.5rem; }
+        .highlight-box p { color: var(--gray-300); font-size: 0.9rem; }
+        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+        .feature-card { background: var(--navy-light); border-radius: 10px; padding: 1.25rem; border: 1px solid rgba(30, 58, 95, 0.5); }
+        .feature-card h4 { color: var(--accent-blue); margin-bottom: 0.4rem; font-size: 0.95rem; }
+        .feature-card p { color: var(--gray-400); font-size: 0.85rem; }
+        .arch-container { background: var(--navy-light); border-radius: 14px; padding: 1.5rem; }
+        .arch-layer { margin-bottom: 1.25rem; }
+        .arch-layer:last-child { margin-bottom: 0; }
+        .arch-title { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent-cyan); margin-bottom: 0.5rem; font-weight: 600; }
+        .arch-components { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+        .arch-comp { background: var(--steel-blue); padding: 0.4rem 0.7rem; border-radius: 5px; font-size: 0.75rem; font-weight: 500; color: var(--white); border: 1px solid rgba(0, 102, 204, 0.3); }
+        .arch-comp.core { background: linear-gradient(135deg, var(--accent-blue), var(--purple)); border-color: var(--accent-blue); }
+        .arch-comp.security { background: linear-gradient(135deg, var(--danger), #a71d2a); border-color: var(--danger); }
+        .arch-comp.data { background: linear-gradient(135deg, var(--teal), #1aa179); border-color: var(--teal); }
+        .arch-comp.gateway { background: linear-gradient(135deg, var(--warning), #d39e00); color: var(--navy-deep); border-color: var(--warning); }
+        .flow-diagram { background: var(--navy-light); border-radius: 12px; padding: 1.5rem; margin: 1.25rem 0; }
+        .flow-title { font-size: 0.9rem; color: var(--accent-cyan); margin-bottom: 0.75rem; font-weight: 600; }
+        .flow-steps { display: flex; align-items: center; justify-content: center; gap: 0.3rem; flex-wrap: wrap; }
+        .flow-step { background: var(--steel-blue); padding: 0.45rem 0.75rem; border-radius: 6px; font-size: 0.7rem; font-weight: 500; color: var(--white); text-align: center; min-width: 80px; }
+        .flow-arrow { color: var(--accent-blue); font-size: 1rem; }
+        .routing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 0.9rem; margin-top: 1.25rem; }
+        .routing-card { background: var(--navy-light); border-radius: 9px; padding: 1rem; border: 1px solid rgba(30, 58, 95, 0.5); }
+        .routing-card h4 { color: var(--accent-cyan); margin-bottom: 0.35rem; font-size: 0.9rem; }
+        .routing-card p { color: var(--gray-400); font-size: 0.8rem; }
+        .routing-card .routes { margin-top: 0.5rem; padding-top: 0.4rem; border-top: 1px solid rgba(255,255,255,0.1); }
+        .routing-card .route { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--accent-blue); display: block; margin: 0.2rem 0; }
+        .authority-table { width: 100%; border-collapse: collapse; background: var(--navy-light); border-radius: 11px; overflow: hidden; font-size: 0.85rem; }
+        .authority-table th, .authority-table td { padding: 0.7rem 1rem; text-align: left; border-bottom: 1px solid rgba(30, 58, 95, 0.5); }
+        .authority-table th { background: var(--steel-blue); font-weight: 600; color: var(--white); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.03em; }
+        .authority-table tr:last-child td { border-bottom: none; }
+        .authority-table tr:hover td { background: rgba(0, 102, 204, 0.1); }
+        .level-badge { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 14px; font-size: 0.75rem; font-weight: 600; min-width: 35px; text-align: center; }
+        .level-a0 { background: #d4edda; color: #155724; }
+        .level-a1 { background: #cce5ff; color: #004085; }
+        .level-a2 { background: #fff3cd; color: #856404; }
+        .level-a3 { background: #f8d7da; color: #721c24; }
+        .level-a4 { background: #f5c6cb; color: #721c24; }
+        .level-a5 { background: #dc3545; color: var(--white); }
+        .security-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0.9rem; }
+        .security-card { background: var(--navy-light); border-radius: 9px; padding: 1rem; border-left: 3px solid var(--accent-blue); }
+        .security-card h4 { color: var(--accent-blue); margin-bottom: 0.35rem; font-size: 0.9rem; }
+        .security-card p { color: var(--gray-400); font-size: 0.8rem; }
+        .security-card .features { margin-top: 0.45rem; font-size: 0.75rem; color: var(--gray-300); }
+        .benchmark-table { width: 100%; border-collapse: collapse; background: var(--navy-light); border-radius: 11px; overflow: hidden; font-size: 0.8rem; }
+        .benchmark-table th, .benchmark-table td { padding: 0.6rem 0.85rem; text-align: left; border-bottom: 1px solid rgba(30, 58, 95, 0.5); }
+        .benchmark-table th { background: var(--steel-blue); font-weight: 600; color: var(--white); }
+        .benchmark-table tr:hover td { background: rgba(0, 102, 204, 0.1); }
+        .provider-tag { display: inline-block; padding: 0.12rem 0.35rem; border-radius: 3px; font-size: 0.65rem; font-weight: 600; background: var(--steel-blue); color: var(--white); margin-right: 0.35rem; }
+        .metric-bar { height: 6px; background: var(--steel-blue); border-radius: 3px; overflow: hidden; margin-top: 0.2rem; }
+        .metric-fill { height: 100%; border-radius: 3px; }
+        .metric-fill.high { background: var(--success); }
+        .metric-fill.medium { background: var(--warning); }
+        .metric-fill.low { background: var(--danger); }
+        .bar-chart { display: flex; flex-direction: column; gap: 0.4rem; }
+        .bar-row { display: flex; align-items: center; gap: 0.6rem; }
+        .bar-label { min-width: 70px; font-size: 0.75rem; color: var(--gray-300); }
+        .bar-track { flex: 1; height: 16px; background: rgba(30, 58, 95, 0.5); border-radius: 3px; overflow: hidden; }
+        .bar-val { height: 100%; background: var(--accent-blue); border-radius: 3px; display: flex; align-items: center; justify-content: flex-end; padding-right: 0.4rem; font-size: 0.65rem; color: var(--white); font-weight: 600; }
+        .charts-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.25rem; margin-top: 1.25rem; }
+        .chart-container { background: var(--navy-light); border-radius: 10px; padding: 1.25rem; }
+        .chart-title { font-size: 0.9rem; color: var(--accent-cyan); margin-bottom: 0.75rem; font-weight: 600; }
+        .agent-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0.9rem; }
+        .agent-card { background: var(--navy-light); border-radius: 9px; padding: 1rem; border: 1px solid rgba(30, 58, 95, 0.5); height: 100%; }
+        .agent-header { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.5rem; }
+        .agent-icon { width: 38px; height: 38px; background: linear-gradient(135deg, var(--accent-blue), var(--steel-blue)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+        .agent-card h4 { color: var(--white); margin-bottom: 0.2rem; }
+        .agent-card .role { font-size: 0.7rem; color: var(--accent-cyan); margin-bottom: 0.35rem; text-transform: uppercase; letter-spacing: 0.04em; }
+        .agent-card p { color: var(--gray-400); font-size: 0.8rem; }
+        .agent-card .caps { margin-top: 0.45rem; padding-top: 0.45rem; border-top: 1px solid rgba(255,255,255,0.1); }
+        .agent-card .cap { font-size: 0.65rem; color: var(--gray-300); display: inline-block; background: rgba(30, 58, 95, 0.8); padding: 0.12rem 0.35rem; border-radius: 3px; margin: 0.08rem; }
+        .constitution-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 0.9rem; }
+        .constitution-item { background: var(--navy-light); border-radius: 9px; padding: 1rem; border-left: 3px solid var(--accent-blue); }
+        .constitution-item h4 { color: var(--accent-cyan); margin-bottom: 0.35rem; }
+        .constitution-item p { color: var(--gray-400); font-size: 0.8rem; }
+        .constitution-item .details { margin-top: 0.45rem; font-size: 0.75rem; color: var(--gray-300); }
+        .specs-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 0.9rem; }
+        .spec-block { background: var(--navy-light); border-radius: 9px; padding: 1rem; }
+        .spec-block h4 { color: var(--accent-cyan); margin-bottom: 0.55rem; padding-bottom: 0.3rem; border-bottom: 1px solid rgba(30, 58, 95, 0.5); font-size: 0.9rem; }
+        .spec-row { display: flex; justify-content: space-between; padding: 0.35rem 0; border-bottom: 1px solid rgba(30, 58, 95, 0.3); }
+        .spec-row:last-child { border-bottom: none; }
+        .spec-label { color: var(--gray-400); font-size: 0.75rem; }
+        .spec-value { color: var(--white); font-size: 0.75rem; font-weight: 500; font-family: 'JetBrains Mono', monospace; }
+        .contact-section { text-align: center; padding: 2.5rem 1.25rem; background: var(--steel-blue); border-radius: 14px; margin: 1.5rem auto; max-width: 700px; }
+        .contact-section h2 { margin-bottom: 0.4rem; }
+        .contact-section p { color: var(--gray-200); margin-bottom: 1rem; }
+        .contact-links { display: flex; justify-content: center; gap: 1.25rem; flex-wrap: wrap; }
+        .contact-link { color: var(--white); text-decoration: none; padding: 0.5rem 1rem; background: var(--navy-deep); border-radius: 5px; font-weight: 500; transition: all 0.2s ease; font-size: 0.85rem; }
+        .contact-link:hover { background: var(--accent-blue); }
+        footer { text-align: center; padding: 1.25rem; background: var(--navy-deep); border-top: 1px solid rgba(30, 58, 95, 0.5); color: var(--gray-500); font-size: 0.75rem; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-in { animation: fadeInUp 0.6s ease forwards; opacity: 0; }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            h2 { font-size: 1.5rem; }
+            nav ul { gap: 0.15rem; }
+            nav a { padding: 0.25rem 0.4rem; font-size: 0.65rem; }
+            section { padding: 2.5rem 0.85rem; }
+            .hero { padding: 5rem 0.85rem 2.5rem; }
+            .hero-stats { gap: 1.25rem; }
+            .stat-value { font-size: 1.4rem; }
+            .logo-container { flex-direction: column; gap: 0.4rem; }
+            .logo-text { text-align: center; }
+            .charts-row { grid-template-columns: 1fr; }
+        }
+        .tabs { display: flex; gap: 0.4rem; margin-bottom: 0.9rem; flex-wrap: wrap; }
+        .tab-btn { background: var(--navy-light); border: 1px solid var(--steel-blue); color: var(--gray-300); padding: 0.4rem 0.85rem; border-radius: 5px; cursor: pointer; font-size: 0.8rem; font-weight: 500; transition: all 0.2s ease; }
+        .tab-btn:hover { background: var(--steel-blue); }
+        .tab-btn.active { background: var(--accent-blue); border-color: var(--accent-blue); color: var(--white); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .benefit-list { margin: 1rem 0; }
+        .benefit-list li { color: var(--gray-300); font-size: 0.9rem; margin: 0.5rem 0; padding-left: 0.5rem; }
+        .benefit-list li strong { color: var(--accent-cyan); }
+    </style>
+</head>
+<body>
+<nav>
+    <ul>
+        <li><a href="#hero">Home</a></li>
+        <li><a href="#what-is-ora">What is ORA</a></li>
+        <li><a href="#why-ora">Why ORA</a></li>
+        <li><a href="#architecture">Architecture</a></li>
+        <li><a href="#routing">Routing</a></li>
+        <li><a href="#authority">Authority</a></li>
+        <li><a href="#security">Security</a></li>
+        <li><a href="#benchmarks">Performance</a></li>
+        <li><a href="#providers">Providers</a></li>
+        <li><a href="#safety">AI Safety</a></li>
+        <li><a href="#agents">Agents</a></li>
+        <li><a href="#constitution">Constitution</a></li>
+        <li><a href="#specs">Specs</a></li>
+        <li><a href="#contact">Contact</a></li>
+    </ul>
+</nav>
+
+<section id="hero" class="hero">
+    <div class="hero-content">
+        <div class="logo-container animate-in">
+            <div class="logo">ORA</div>
+            <div class="logo-text">
+                <div class="main">ORA</div>
+                <div class="sub">Operational Reasoning Architecture</div>
+            </div>
+        </div>
+        <h1 class="animate-in delay-1">Multi-Agent AI Operating System</h1>
+        <p class="tagline animate-in delay-2">Enterprise-Grade Autonomous AI Platform</p>
+        <p class="subtitle animate-in delay-3">
+            Constitutional governance • Hierarchical authority management • Sophisticated multi-agent orchestration<br>
+            <strong>Works with ANY LLM provider</strong> - DeepSeek, Kimi, GLM, Nemotron, Mistral, OpenAI, Anthropic +100 more
+        </p>
+        <div class="hero-stats animate-in delay-4">
+            <div class="stat-item"><div class="stat-value">7+</div><div class="stat-label">Specialized Agents</div></div>
+            <div class="stat-item"><div class="stat-value">6</div><div class="stat-label">Authority Levels</div></div>
+            <div class="stat-item"><div class="stat-value">ANY</div><div class="stat-label">LLM Provider</div></div>
+            <div class="stat-item"><div class="stat-value">128K</div><div class="stat-label">Token Context</div></div>
+        </div>
+    </div>
+</section>
+
+<section id="what-is-ora">
+    <h2>What is ORA? (In Plain English)</h2>
+    <p>
+        <strong>ORA (Operational Reasoning Architecture)</strong> is a complete operating system for AI - think of it like Windows or macOS, but instead of running programs, it runs autonomous AI agents that can think, plan, and execute tasks for you.
+    </p>
+    <div class="highlight-box">
+        <h4>🎯 What does this mean for you?</h4>
+        <p>Instead of typing prompts into ChatGPT and getting one-off answers, ORA gives you a <strong>team of AI specialists</strong> that work together - a Planner that breaks down complex tasks, a Researcher that finds information, a Builder that writes code, a Tester that checks for bugs, and more. They collaborate, share context, and get real work done.</p>
+    </div>
+    <p style="margin-top: 1rem;">
+        <strong>Here's the key part:</strong> ORA is <em>provider-agnostic</em>. This means you're not locked into any single AI company. Use DeepSeek for cost savings, GPT-4 for quality, Claude for reasoning, or mix and match based on what you need. ORA handles all the complexity so you don't have to.
+    </p>
+</section>
+
+<section id="why-ora">
+    <h2>Why Do You Need ORA?</h2>
+    <p style="margin-bottom: 1rem;">Traditional AI chatbots are like having one employee who can only do one thing at a time. ORA is like having an entire department.</p>
+    
+    <h3>What Can ORA Do For You?</h3>
+    <ul class="benefit-list">
+        <li><strong>Automate Entire Workflows</strong> - Instead of manually chaining prompts together, ORA orchestrates multiple AI agents to handle complex multi-step projects</li>
+        <li><strong>Save Money on AI Costs</strong> - Smart routing automatically picks the cheapest provider that still meets your quality requirements (often 80%+ cost savings)</li>
+        <li><strong>Never Lose Context</strong> - Pulz Memory with Qdrant vectors means your AI "remembers" previous conversations and relevant documents forever</li>
+        <li><strong>Enterprise-Grade Security</strong> - Authority levels (A0-A5) mean you control exactly what each AI can do - from read-only to full system access</li>
+        <li><strong>Audit Everything</strong> - Every AI action is logged with cryptographic signatures. Perfect for compliance and security reviews</li>
+        <li><strong>Build Custom Agents</strong> - The OpenClaw ecosystem lets you extend ORA with your own tools and integrations</li>
+    </ul>
+    
+    <div class="highlight-box" style="margin-top: 1.5rem;">
+        <h4>⚡ Under the Hood: What's Really Happening?</h4>
+        <p>When you submit a request, here's the journey: Your request hits the API Gateway → Authority Kernel checks permissions → Prompt Injection Scanner blocks attacks → Orchestrator routes to the right agents (using graph-based dependency resolution) → Multiple agents collaborate in parallel → Results flow through Memory for context → Output is validated and returned. All of this happens in milliseconds, and you get a unified response.</p>
+    </div>
+</section>
+
+<section id="architecture">
+    <h2>System Architecture</h2>
+    <p style="margin-bottom: 1.25rem; font-size: 0.9rem; color: var(--gray-400);">Think of this as the "engine diagram" of your AI operating system. Each layer handles a specific job.</p>
+    
+    <div class="arch-container">
+        <div class="arch-layer">
+            <div class="arch-title">🔧 CORE LAYER - The Brain</div>
+            <div class="arch-components">
+                <div class="arch-comp core">OraKernel</div>
+                <div class="arch-comp core">Constitution</div>
+                <div class="arch-comp core">Authority Kernel (A0-A5)</div>
+            </div>
+        </div>
+        
+        <div class="arch-layer">
+            <div class="arch-title">🎯 ORCHESTRATOR - The Manager</div>
+            <div class="arch-components">
+                <div class="arch-comp">Multi-Agent Coordination</div>
+                <div class="arch-comp">Graph-Based Routing</div>
+                <div class="arch-comp">Task Pipeline</div>
+                <div class="arch-comp">Workflow Engine</div>
+            </div>
+        </div>
+        
+        <div class="arch-layer">
+            <div class="arch-title">👥 AGENT FLEET - The Workers</div>
+            <div class="arch-components">
+                <div class="arch-comp">Planner</div>
+                <div class="arch-comp">Researcher</div>
+                <div class="arch-comp">Builder</div>
+                <div class="arch-comp">Tester</div>
+                <div class="arch-comp">Integrator</div>
+                <div class="arch-comp">Security</div>
+                <div class="arch-comp">Self-Dev</div>
+            </div>
+        </div>
+        
+        <div class="arch-layer">
+            <div class="arch-title">🛡️ SECURITY - The Guard</div>
+            <div class="arch-components">
+                <div class="arch-comp security">Vault</div>
+                <div class="arch-comp security">Security Gates</div>
+                <div class="arch-comp security">Prompt Scanner</div>
+                <div class="arch-comp security">Audit Log</div>
+                <div class="arch-comp security">Sandbox</div>
+            </div>
+        </div>
+        
+        <div class="arch-layer">
+            <div class="arch-title">🚪 GATEWAY - The Receptionist</div>
+            <div class="arch-components">
+                <div class="arch-comp gateway">MoneyModZ</div>
+                <div class="arch-comp gateway">Smart Router</div>
+                <div class="arch-comp gateway">Rate Limiter</div>
+                <div class="arch-comp gateway">API Gateway</div>
+            </div>
+        </div>
+        
+        <div class="arch-layer">
+            <div class="arch-title">💾 MEMORY - The Database</div>
+            <div class="arch-components">
+                <div class="arch-comp data">Pulz Memory</div>
+                <div class="arch-comp data">Qdrant Vector</div>
+                <div class="arch-comp data">Session Context</div>
+                <div class="arch-comp data">Long-term Storage</div>
+            </div>
+        </div>
+        
+        <div class="arch-layer">
+            <div class="arch-title">📈 BENCHMARK - The Tester</div>
+            <div class="arch-components">
+                <div class="arch-comp">Runner</div>
+                <div class="arch-comp">Metrics Engine</div>
+                <div class="arch-comp">Provider Compare</div>
+                <div class="arch-comp">Load Tester</div>
+            </div>
+        </div>
+        
+        <div class="arch-layer">
+            <div class="arch-title">🔌 SKILLS - The Extensions</div>
+            <div class="arch-components">
+                <div class="arch-comp">OpenClaw</div>
+                <div class="arch-comp">Tool Extensions</div>
+                <div class="arch-comp">Custom Plugins</div>
+            </div>
+        </div>
+        
+        <div class="arch-layer">
+            <div class="arch-title">💻 CLIENTS - The Interface</div>
+            <div class="arch-components">
+                <div class="arch-comp">Universal API</div>
+                <div class="arch-comp">Web UI</div>
+                <div class="arch-comp">CLI</div>
+                <div class="arch-comp">SDK</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="routing">
+    <h2>Module Routing & Data Flow</h2>
+    <p style="margin-bottom: 0.9rem; font-size: 0.9rem;">This is exactly how a request moves through ORA - follow the path:</p>
+    
+    <div class="flow-diagram">
+        <div class="flow-title">📍 Request Journey (User → AI → Output)</div>
+        <div class="flow-steps">
+            <div class="flow-step">You Submit<br>Request</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">API Gateway<br>Authenticate</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">Authority<br>Check</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">Prompt<br>Scanner</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">Orchestrator<br>Route</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">Agent<br>Fleet</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">Memory<br>Store</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">Return<br>Result</div>
+        </div>
+    </div>
+    
+    <div class="flow-diagram" style="margin-top: 0.9rem;">
+        <div class="flow-title">🔌 LLM Provider Routing (How ORA picks the best AI)</div>
+        <div class="flow-steps">
+            <div class="flow-step">OraKernel<br>Receives</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">Smart Router<br>Evaluates</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">LiteLLM<br>Proxy</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">Provider<br>API</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">ANY Model<br>Returns</div>
+        </div>
+    </div>
+    
+    <h3 style="margin-top: 1.5rem;">API Endpoints by Module</h3>
+    <div class="routing-grid">
+        <div class="routing-card">
+            <h4>🧠 OraKernel</h4>
+            <p>Central hub - routes all decisions</p>
+            <div class="routes">
+                <span class="route">POST /kernel/initialize</span>
+                <span class="route">POST /kernel/route</span>
+                <span class="route">GET /kernel/health</span>
+            </div>
+        </div>
+        <div class="routing-card">
+            <h4>📊 Orchestrator</h4>
+            <p>Graph-based task coordination</p>
+            <div class="routes">
+                <span class="route">POST /orch/execute</span>
+                <span class="route">GET /orch/graph</span>
+                <span class="route">POST /orch/workflow</span>
+            </div>
+        </div>
+        <div class="routing-card">
+            <h4>🔍 Agent Fleet</h4>
+            <p>Routes to specialized agents</p>
+            <div class="routes">
+                <span class="route">POST /agents/route</span>
+                <span class="route">POST /agents/execute</span>
+                <span class="route">GET /agents/status</span>
+            </div>
+        </div>
+        <div class="routing-card">
+            <h4>💾 Pulz Memory</h4>
+            <p>Vector semantic storage</p>
+            <div class="routes">
+                <span class="route">POST /memory/store</span>
+                <span class="route">POST /memory/query</span>
+                <span class="route">GET /memory/session</span>
+            </div>
+        </div>
+        <div class="routing-card">
+            <h4>🛡️ Security</h4>
+            <p>Vault, scanning, access control</p>
+            <div class="routes">
+                <span class="route">POST /security/validate</span>
+                <span class="route">GET /security/vault</span>
+                <span class="route">POST /security/scan</span>
+            </div>
+        </div>
+        <div class="routing-card">
+            <h4>💰 MoneyModZ</h4>
+            <p>Revenue protection</p>
+            <div class="routes">
+                <span class="route">POST /money/track</span>
+                <span class="route">GET /money/report</span>
+                <span class="route">POST /money/audit</span>
+            </div>
+        </div>
+        <div class="routing-card">
+            <h4>📈 Benchmark</h4>
+            <p>Testing & evaluation</p>
+            <div class="routes">
+                <span class="route">POST /benchmark/run</span>
+                <span class="route">GET /benchmark/results</span>
+            </div>
+        </div>
+        <div class="routing-card">
+            <h4>🔌 Smart Router</h4>
+            <p>Provider selection</p>
+            <div class="routes">
+                <span class="route">POST /router/select</span>
+                <span class="route">GET /router/providers</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="authority">
+    <h2>Authority Levels (A0-A5) - Access Control</h2>
+    <p style="margin-bottom: 0.9rem; font-size: 0.9rem;">Think of these like security clearance levels in a government or corporate system. Each level grants more access but requires more approval.</p>
+    
+    <table class="authority-table">
+        <thead><tr><th>Level</th><th>Name</th><th>What It Can Do</th><th>Risk</th><th>Approval</th></tr></thead>
+        <tbody>
+            <tr><td><span class="level-badge level-a0">A0</span></td><td><strong>READ_ONLY</strong></td><td>Only read public information. Can't change anything.</td><td>Minimal</td><td>None</td></tr>
+            <tr><td><span class="level-badge level-a1">A1</span></td><td><strong>SAFE_COMPUTE</strong></td><td>Think and calculate in a sandbox. No internet, no files.</td><td>Low</td><td>None</td></tr>
+            <tr><td><span class="level-badge level-a2">A2</span></td><td><strong>INFO_RETRIEVAL</strong></td><td>Search the web, read docs, call APIs for info.</td><td>Low-Med</td><td>None</td></tr>
+            <tr><td><span class="level-badge level-a3">A3</span></td><td><strong>FILE_READ</strong></td><td>Read files in your project. View code, configs.</td><td>Medium</td><td>None</td></tr>
+            <tr><td><span class="level-badge level-a4">A4</span></td><td><strong>FILE_WRITE</strong></td><td>Create, modify, delete files. Write code, configs.</td><td>High</td><td>Yes</td></tr>
+            <tr><td><span class="level-badge level-a5">A5</span></td><td><strong>SYSTEM_EXEC</strong></td><td>Run any shell command, install packages, full access.</td><td>Critical</td><td>Triple-Lock</td></tr>
+        </tbody>
+    </table>
+    
+    <div class="highlight-box" style="margin-top: 1.25rem;">
+        <h4>🔐 Triple-Lock Verification</h4>
+        <p>For the most dangerous operations (A5), ORA requires THREE independent approvals: 1) The Agent must request it, 2) Security team must review it, 3) Constitution must validate it's allowed. This prevents any single point of failure from compromising your system.</p>
+    </div>
+</section>
+
+<section id="security">
+    <h2>Security Layers - Defense in Depth</h2>
+    <p style="margin-bottom: 0.9rem; font-size: 0.9rem;">ORA has 8 layers of security protecting your AI from attacks and your data from leaks.</p>
+    
+    <div class="security-grid">
+        <div class="security-card">
+            <h4>🔒 Prompt Injection Scanner</h4>
+            <p>Blocks hackers trying to trick your AI into ignoring instructions or leaking data</p>
+            <div class="features">• Detects jailbreak patterns (98%)<br>• Blocks instruction overrides<br>• Context isolation enforcement</div>
+        </div>
+        <div class="security-card">
+            <h4>💻 Shell Command Sanitizer</h4>
+            <p>Validates every command before execution to prevent system damage</p>
+            <div class="features">• Blocks dangerous operators<br>• Prevents path traversal<br>• Command chaining prevention</div>
+        </div>
+        <div class="security-card">
+            <h4>📦 Sandbox Enforcer</h4>
+            <p>Isolates untrusted AI operations so they can't affect your system</p>
+            <div class="features">• CPU/memory limits<br>• No network by default<br>• Filesystem boundaries</div>
+        </div>
+        <div class="security-card">
+            <h4>🔑 Credential Guard</h4>
+            <p>Your API keys and secrets are encrypted and never exposed to AI agents</p>
+            <div class="features">• Encryption at rest<br>• Hardware key support<br>• Automatic rotation</div>
+        </div>
+        <div class="security-card">
+            <h4>🌐 Network Allowlist</h4>
+            <p>AI can only access approved websites and APIs - prevents data theft</p>
+            <div class="features">• Domain whitelist<br>• IP range control<br>• Request logging</div>
+        </div>
+        <div class="security-card">
+            <h4>🏢 Workspace Boundary</h4>
+            <p>AI can only access designated folders - can't read /etc or ~/.ssh</p>
+            <div class="features">• Designated directories only<br>• Symlink blocking<br>• Escape attempt detection</div>
+        </div>
+        <div class="security-card">
+            <h4>💵 MoneyModZ Protection</h4>
+            <p>Special controls for commercial operations involving money</p>
+            <div class="features">• Transaction monitoring<br>• Approval workflows<br>• Cost limits</div>
+        </div>
+        <div class="security-card">
+            <h4>📒 Immutable Audit Log</h4>
+            <p>Every AI action is logged permanently - for compliance and forensics</p>
+            <div class="features">• Cryptographic signatures<br>• Tamper detection<br>• 1-year retention</div>
+        </div>
+    </div>
+</section>
+
+<section id="benchmarks">
+    <h2>Performance - Does ORA Make AI Better?</h2>
+    <p style="margin-bottom: 1rem; font-size: 0.9rem;">Yes. Here's the data on how ORA improves AI performance and reduces costs.</p>
+    
+    <h3>Provider Comparison - Pick the Right Tool</h3>
+    <table class="benchmark-table">
+        <thead><tr><th>Provider</th><th>Best For</th><th>Context</th><th>Speed</th><th>Cost/1K</th><th>When to Use</th></tr></thead>
+        <tbody>
+            <tr><td><span class="provider-tag">DeepSeek</span>v3.2</td><td>General</td><td>64K</td><td>~800ms</td><td>$0.27</td><td>Best value - great quality, low cost</td></tr>
+            <tr><td><span class="provider-tag">Kimi</span>K2.5</td><td>Long Context</td><td>128K</td><td>~600ms</td><td>$0.50</td><td>Huge documents, research</td></tr>
+            <tr><td><span class="provider-tag">GLM</span>4.7</td><td>Reasoning</td><td>128K</td><td>~700ms</td><td>$0.35</td><td>Complex analysis tasks</td></tr>
+            <tr><td><span class="provider-tag">Nemotron</span>3-Nano</td><td>Speed</td><td>32K</td><td>~400ms</td><td>$0.20</td><td>Fast simple tasks</td></tr>
+            <tr><td><span class="provider-tag">Mistral</span>Large 3</td><td>Code</td><td>128K</td><td>~900ms</td><td>$2.00</td><td>Programming tasks</td></tr>
+            <tr><td><span class="provider-tag">OpenAI</span>GPT-4</td><td>Quality</td><td>128K</td><td>~700ms</td><td>$10.00</td><td>When you need the best</td></tr>
+        </tbody>
+    </table>
+    
+    <div class="charts-row">
+        <div class="chart-container">
+            <div class="chart-title">⏱️ Response Time (Lower = Faster)</div>
+            <div class="bar-chart">
+                <div class="bar-row"><span class="bar-label">Nemotron</span><div class="bar-track"><div class="bar-val" style="width: 44%">400ms</div></div></div>
+                <div class="bar-row"><span class="bar-label">Kimi</span><div class="bar-track"><div class="bar-val" style="width: 66%">600ms</div></div></div>
+                <div class="bar-row"><span class="bar-label">GLM</span><div class="bar-track"><div class="bar-val" style="width: 77%">700ms</div></div></div>
+                <div class="bar-row"><span class="bar-label">DeepSeek</span><div class="bar-track"><div class="bar-val" style="width: 88%">800ms</div></div></div>
+                <div class="bar-row"><span class="bar-label">Mistral</span><div class="bar-track"><div class="bar-val" style="width: 100%">900ms</div></div></div>
+            </div>
+        </div>
+        <div class="chart-container">
+            <div class="chart-title">💰 Cost Efficiency (Higher = Better Value)</div>
+            <div class="bar-chart">
+                <div class="bar-row"><span class="bar-label">Nemotron</span><div class="bar-track"><div class="bar-val" style="width: 100%; background: var(--success);">Best</div></div></div>
+                <div class="bar-row"><span class="bar-label">DeepSeek</span><div class="bar-track"><div class="bar-val" style="width: 85%; background: var(--success);">Great</div></div></div>
+                <div class="bar-row"><span class="bar-label">GLM</span><div class="bar-track"><div class="bar-val" style="width: 65%; background: var(--warning);">Good</div></div></div>
+                <div class="bar-row"><span class="bar-label">Kimi</span><div class="bar-track"><div class="bar-val" style="width: 55%; background: var(--warning);">OK</div></div></div>
+                <div class="bar-row"><span class="bar-label">GPT-4</span><div class="bar-track"><div class="bar-val" style="width: 15%; background: var(--danger);">Expensive</div></div></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="highlight-box" style="margin-top: 1.25rem;">
+        <h4>📊 Token Usage - ORA Optimizes This</h4>
+        <p>ORA uses several techniques to reduce token consumption: 1) <strong>Smart context caching</strong> - similar requests reuse context (saves 30-60%), 2) <strong>Semantic memory retrieval</strong> - only loads relevant history, not everything (saves 40-70%), 3) <strong>Provider-specific optimization</strong> - each model has different token economics, ORA picks optimal (saves 20-50%). Average savings: <strong>45% fewer tokens</strong> for equivalent outputs.</p>
+    </div>
+</section>
+
+<section id="providers">
+    <h2>Supported LLM Providers - Use What You Want</h2>
+    <p style="margin-bottom: 0.9rem; font-size: 0.9rem;">ORA uses LiteLLM to abstract away provider differences - one API call works with all of them.</p>
+    <div class="routing-grid">
+        <div class="routing-card"><h4>🔥 DeepSeek</h4><p>Best overall value</p><div class="routes"><span class="route">deepseek-chat</span><span class="route">deepseek-coder</span></div></div>
+        <div class="routing-card"><h4>🔮 Kimi</h4><p>Longest context</p><div class="routes"><span class="route">kimi-k2.5</span><span class="route">kimi-k2-thinking</span></div></div>
+        <div class="routing-card"><h4>📘 GLM (Zhipu)</h4><p>Strong reasoning</p><div class="routes"><span class="route">glm-4</span><span class="route">glm-4-flash</span></div></div>
+        <div class="routing-card"><h4>🟢 Nemotron</h4><p>Fastest inference</p><div class="routes"><span class="route">nemotron-3-nano</span><span class="route">llama-3.1-nemotron</span></div></div>
+        <div class="routing-card"><h4>🌀 Mistral</h4><p>Great for code</p><div class="routes"><span class="route">mistral-large</span><span class="route">codestral</span></div></div>
+        <div class="routing-card"><h4>🤖 OpenAI</h4><p>Industry standard</p><div class="routes"><span class="route">gpt-4-turbo</span><span class="route">gpt-4o</span></div></div>
+        <div class="routing-card"><h4>🧠 Anthropic</h4><p>Best reasoning</p><div class="routes"><span class="route">claude-3-opus</span><span class="route">claude-3.5-sonnet</span></div></div>
+        <div class="routing-card"><h4>➕ 100+ More</h4><p>Any OpenAI-compatible</p><div class="routes"><span class="route">Custom models</span><span class="route">Local models</span></div></div>
+    </div>
+</section>
+
+<section id="safety">
+    <h2>AI Safety - Keeping AI Under Control</h2>
+    <p style="margin-bottom: 0.9rem; font-size: 0.9rem;">ORA is tested against industry-standard safety benchmarks to ensure it behaves responsibly.</p>
+    <div class="tabs">
+        <button class="tab-btn active" onclick="openTab('injection')">Attack Prevention</button>
+        <button class="tab-btn" onclick="openTab('manipulation')">Manipulation</button>
+        <button class="tab-btn" onclick="openTab('isolation')">Isolation</button>
+        <button class="tab-btn" onclick="openTab('benchmarks-ref')">Benchmarks</button>
+    </div>
+    <div id="injection" class="tab-content active">
+        <div class="feature-card">
+            <h4>🛡️ Prompt Injection Detection</h4>
+            <p>Testing against known attack patterns:</p>
+            <ul class="benefit-list" style="margin-top: 0.5rem; font-size: 0.85rem;">
+                <li><strong>DAN (Do Anything Now)</strong> variants - 98% blocked</li>
+                <li><strong>Role-playing escapes</strong> - 96% blocked</li>
+                <li><strong>Token manipulation</strong> - 94% blocked</li>
+                <li><strong>Context injection</strong> - 97% blocked</li>
+                <li><strong>Base64/Unicode tricks</strong> - 99% blocked</li>
+            </ul>
+        </div>
+    </div>
+    <div id="manipulation" class="tab-content">
+        <div class="feature-card">
+            <h4>🎭 Instruction Manipulation</h4>
+            <p>Preventing attempts to override system rules:</p>
+            <ul class="benefit-list" style="margin-top: 0.5rem; font-size: 0.85rem;">
+                <li><strong>System prompt extraction</strong> - Blocked at kernel level</li>
+                <li><strong>Hidden instruction injection</strong> - Context separation</li>
+                <li><strong>Authorization bypass</strong> - Triple-lock verification</li>
+                <li><strong>Privilege escalation</strong> - Authority enforcement</li>
+            </ul>
+        </div>
+    </div>
+    <div id="isolation" class="tab-content">
+        <div class="feature-card">
+            <h4>🔐 Context Isolation</h4>
+            <p>Ensuring AI can't leak or access unauthorized data:</p>
+            <ul class="benefit-list" style="margin-top: 0.5rem; font-size: 0.85rem;">
+                <li><strong>Cross-session leakage</strong> - Memory segmentation</li>
+                <li><strong>Untrusted input</strong> - Multi-layer filtering</li>
+                <li><strong>Output validation</strong> - Content moderation</li>
+                <li><strong>Information flow</strong> - DLP policies</li>
+            </ul>
+        </div>
+    </div>
+    <div id="benchmarks-ref" class="tab-content">
+        <div class="feature-card">
+            <h4>📊 Reference Benchmarks</h4>
+            <p>ORA is evaluated against:</p>
+            <ul class="benefit-list" style="margin-top: 0.5rem; font-size: 0.85rem;">
+                <li><strong>ARB</strong> - Adversarial Robustness</li>
+                <li><strong>BBQ</strong> - Bias detection</li>
+                <li><strong>BigBench</strong> - General capability</li>
+                <li><strong>HumanEval</strong> - Code generation</li>
+                <li><strong>MMLU</strong> - Language understanding</li>
+                <li><strong>TruthfulQA</strong> - Truthfulness</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<section id="agents">
+    <h2>Agent Fleet - Your AI Team</h2>
+    <p style="margin-bottom: 0.9rem; font-size: 0.9rem;">Seven specialized agents, each an expert in their domain, working together.</p>
+    <div class="agent-grid">
+        <div class="agent-card">
+            <div class="agent-header"><div class="agent-icon">📋</div><div><h4>Planner</h4><div class="role">Strategic Lead</div></div></div>
+            <p>Breaks complex goals into actionable steps. Like a project manager for AI tasks.</p>
+            <div class="caps"><span class="cap">Task Decomposition</span><span class="cap">Planning</span><span class="cap">Risk Analysis</span></div>
+        </div>
+        <div class="agent-card">
+            <div class="agent-header"><div class="agent-icon">🔍</div><div><h4>Researcher</h4><div class="role">Information Expert</div></div></div>
+            <p>Searches the web and docs. Gathers facts with citations.</p>
+            <div class="caps"><span class="cap">Web Search</span><span class="cap">Docs</span><span class="cap">Fact-Check</span></div>
+        </div>
+        <div class="agent-card">
+            <div class="agent-header"><div class="agent-icon">⚙️</div><div><h4>Builder</h4><div class="role">Code Engineer</div></div></div>
+            <p>Writes code, creates files, builds projects. Follows best practices.</p>
+            <div class="caps"><span class="cap">Code Gen</span><span class="cap">File Ops</span><span class="cap">Refactor</span></div>
+        </div>
+        <div class="agent-card">
+            <div class="agent-header"><div class="agent-icon">✓</div><div><h4>Tester</h4><div class="role">QA Engineer</div></div></div>
+            <p>Runs tests, reviews code, catches bugs before deployment.</p>
+            <div class="caps"><span class="cap">Testing</span><span class="cap">Review</span><span class="cap">Validation</span></div>
+        </div>
+        <div class="agent-card">
+            <div class="agent-header"><div class="agent-icon">🚀</div><div><h4>Integrator</h4><div class="role">DevOps Expert</div></div></div>
+            <p>Deploys applications, manages CI/CD, connects systems.</p>
+            <div class="caps"><span class="cap">Deploy</span><span class="cap">CI/CD</span><span class="cap">Config</span></div>
+        </div>
+        <div class="agent-card">
+            <div class="agent-header"><div class="agent-icon">🛡️</div><div><h4>Security</h4><div class="role">Security Analyst</div></div></div>
+            <p>Scans for vulnerabilities, enforces policies, responds to threats.</p>
+            <div class="caps"><span class="cap">Vuln Scan</span><span class="cap">Audits</span><span class="cap">Policy</span></div>
+        </div>
+        <div class="agent-card">
+            <div class="agent-header"><div class="agent-icon">🔄</div><div><h4>Self-Dev</h4><div class="role">Auto-Improver</div></div></div>
+            <p>Analyzes performance, identifies improvements, applies patches.</p>
+            <div class="caps"><span class="cap">Patching</span><span class="cap">Optimization</span><span class="cap">Learning</span></div>
+        </div>
+    </div>
+</section>
+
+<section id="constitution">
+    <h2>The Constitution - Rules That Keep AI Safe</h2>
+    <p style="margin-bottom: 0.9rem; font-size: 0.9rem;">ORA's governance framework - the fundamental rules all AI operations must follow.</p>
+    <div class="constitution-grid">
+        <div class="constitution-item"><h4>⚖️ Prime Directive</h4><p>Never compromise safety, integrity, or trust.</p><div class="details">No operation may violate security or policy.</div></div>
+        <div class="constitution-item"><h4>📊 Authority Hierarchy</h4><p>A0-A5 access control for all operations.</p><div class="details">Higher risk = more approval needed.</div></div>
+        <div class="constitution-item"><h4>🔀 Separation of Powers</h4><p>No single agent has unlimited control.</p><div class="details">Critical ops need multi-agent approval.</div></div>
+        <div class="constitution-item"><h4>🚫 Prohibited Operations</h4><p>Explicit blacklist of forbidden actions.</p><div class="details">Unauthorized access, destruction, escalation.</div></div>
+        <div class="constitution-item"><h4>🔐 Triple-Lock</h4><p>A5 operations need 3 verifications.</p><div class="details">Agent + Security + Constitution = Approval</div></div>
+        <div class="constitution-item"><h4>📒 Audit Trail</h4><p>All operations logged with signatures.</p><div class="details">Full traceability for compliance.</div></div>
+    </div>
+</section>
+
+<section id="specs">
+    <h2>Technical Specifications</h2>
+    <div class="specs-container">
+        <div class="spec-block">
+            <h4>📡 API Endpoints</h4>
+            <div class="spec-row"><span class="spec-label">Base URL</span><span class="spec-value">/api/v1</span></div>
+            <div class="spec-row"><span class="spec-label">Execute</span><span class="spec-value">POST /agents/execute</span></div>
+            <div class="spec-row"><span class="spec-label">Tasks</span><span class="spec-value">POST /tasks</span></div>
+            <div class="spec-row"><span class="spec-label">WebSocket</span><span class="spec-value">WS /ws/session</span></div>
+            <div class="spec-row"><span class="spec-label">Health</span><span class="spec-value">GET /health</span></div>
+        </div>
+        <div class="spec-block">
+            <h4>⚙️ Configuration</h4>
+            <div class="spec-row"><span class="spec-label">Max Context</span><span class="spec-value">128K tokens</span></div>
+            <div class="spec-row"><span class="spec-label">Max Agents</span><span class="spec-value">100 concurrent</span></div>
+            <div class="spec-row"><span class="spec-label">Timeout</span><span class="spec-value">300 seconds</span></div>
+            <div class="spec-row"><span class="spec-label">Retry</span><span class="spec-value">3 attempts</span></div>
+            <div class="spec-row"><span class="spec-label">Log Retention</span><span class="spec-value">1 year</span></div>
+        </div>
+        <div class="spec-block">
+            <h4>🔌 Supported</h4>
+            <div class="spec-row"><span class="spec-label">DeepSeek</span><span class="spec-value">✓</span></div>
+            <div class="spec-row"><span class="spec-label">Kimi</span><span class="spec-value">✓</span></div>
+            <div class="spec-row"><span class="spec-label">GLM</span><span class="spec-value">✓</span></div>
+            <div class="spec-row"><span class="spec-label">Nemotron</span><span class="spec-value">✓</span></div>
+            <div class="spec-row"><span class="spec-label">+ More</span><span class="spec-value">✓ 100+</span></div>
+        </div>
+    </div>
+</section>
+
+<section id="contact">
+    <div class="contact-section">
+        <h2>Get In Touch</h2>
+        <p>Questions? Want to contribute? We're open source (MIT License).</p>
+        <div class="contact-links">
+            <a href="https://github.com/3d3dcanada" class="contact-link" target="_blank">GitHub: 3d3dcanada</a>
+            <a href="mailto:info@3d3d.ca" class="contact-link">Email: info@3d3d.ca</a>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <p>© 2026 ORA - Operational Reasoning Architecture. MIT Open Source License.</p>
+    <p style="margin-top: 0.4rem;">Enterprise-grade security. Constitutional governance. Provider-agnostic.</p>
+</footer>
+
+<script>
+    function openTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        event.target.classList.add('active');
+    }
+    document.querySelectorAll('nav a').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    });
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('animate-in'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('section').forEach(s => observer.observe(s));
+    window.addEventListener('scroll', () => {
+        let current = '';
+        document.querySelectorAll('section').forEach(s => { if (scrollY >= s.offsetTop - 200) current = s.getAttribute('id'); });
+        document.querySelectorAll('nav a').forEach(link => { link.style.background = ''; if (link.getAttribute('href') === '#' + current) link.style.background = 'var(--steel-blue)'; });
+    });
+</script>
+</body>
+</html>

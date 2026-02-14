@@ -1,0 +1,237 @@
+/* OrA — Cyberpunk Command Center */
+/* Dark base, neon magenta/cyan/orange — uses ALL screen space */
+
+Screen {
+    background: #0a0a0f;
+    layout: vertical;
+}
+
+Header {
+    background: #1a0a2e;
+    color: #e0b0ff;
+    text-style: bold;
+    dock: top;
+    height: 1;
+}
+
+Footer {
+    display: none;
+}
+
+/* ── Main Layout — fills ALL available space ── */
+
+#main-layout {
+    height: 1fr;
+    min-height: 10;
+}
+
+#left-column {
+    width: 1fr;
+    min-width: 30;
+    border-right: tall #2a1a3e;
+}
+
+#right-column {
+    width: 36;
+    min-width: 28;
+    max-width: 44;
+}
+
+/* ── Chat Panel — takes all the space it can ── */
+
+ChatPanel {
+    background: #0a0a0f;
+    height: 1fr;
+    layout: vertical;
+}
+
+#chat-log {
+    height: 1fr;
+    border: none;
+    padding: 0 1;
+    background: #0a0a0f;
+    color: #d0d0e0;
+    scrollbar-color: #6a3d7d;
+    scrollbar-color-hover: #e0b0ff;
+    scrollbar-color-active: #ff00ff;
+    scrollbar-size-vertical: 1;
+}
+
+#chat-input {
+    dock: bottom;
+    height: 3;
+    margin: 0 1 0 1;
+    border: tall #2a1a3e;
+    background: #12121f;
+    color: #e0e0e0;
+    padding: 0 1;
+}
+
+#chat-input:focus {
+    border: tall #ff00ff;
+    background: #16162a;
+}
+
+/* ── Monitor Panel — compact sidebar ── */
+
+MonitorPanel {
+    height: auto;
+    max-height: 14;
+    padding: 0 1;
+    border-bottom: tall #2a1a3e;
+    background: #0d0d15;
+}
+
+#monitor-title {
+    color: #00ffcc;
+    text-style: bold;
+    padding: 0;
+}
+
+MonitorPanel ProgressBar {
+    padding: 0 1;
+    margin: 0;
+}
+
+MonitorPanel ProgressBar Bar {
+    color: #00ffcc;
+    background: #1a1a2e;
+}
+
+MonitorPanel ProgressBar PercentageStatus {
+    color: #00ffcc;
+    width: 5;
+}
+
+MonitorPanel Static {
+    color: #a0a0c0;
+    height: 1;
+}
+
+#sparkline-label {
+    color: #555;
+    padding: 0 0 0 1;
+    height: 1;
+}
+
+#cpu-sparkline {
+    height: 2;
+    margin: 0 1;
+    min-width: 16;
+}
+
+Sparkline > .sparkline--min-color {
+    color: #00ffcc;
+}
+
+Sparkline > .sparkline--max-color {
+    color: #ff00ff;
+}
+
+/* ── Task Panel — compact ── */
+
+TaskPanel {
+    height: 1fr;
+    min-height: 5;
+    padding: 0 1;
+    background: #0d0d15;
+    border-bottom: tall #2a1a3e;
+}
+
+#task-title {
+    color: #ff9f43;
+    text-style: bold;
+    padding: 0;
+}
+
+#task-list {
+    height: 1fr;
+    padding: 0;
+    background: #0d0d15;
+    scrollbar-size-vertical: 1;
+}
+
+TaskPanel Static {
+    color: #a0a0c0;
+    height: 1;
+}
+
+/* ── Approval Panel — hidden default, neon border when active ── */
+
+ApprovalPanel {
+    height: auto;
+    min-height: 3;
+    max-height: 12;
+    border: heavy #ff00ff;
+    padding: 0 1;
+    margin: 0;
+    background: #1a0a2e;
+}
+
+ApprovalPanel.hidden {
+    display: none;
+}
+
+ApprovalPanel #approval-title {
+    text-style: bold;
+    color: #ff9f43;
+    height: 1;
+}
+
+ApprovalPanel #approval-description {
+    height: auto;
+    max-height: 5;
+    color: #d0d0e0;
+}
+
+ApprovalPanel #approval-buttons {
+    height: 3;
+    align: center middle;
+}
+
+ApprovalPanel #btn-approve {
+    background: #00cc66;
+    color: #000;
+    margin-right: 1;
+    min-width: 14;
+}
+
+ApprovalPanel #btn-reject {
+    background: #cc3333;
+    color: #fff;
+    min-width: 14;
+}
+
+/* ── Status Bar — one-line info bar ── */
+
+StatusBar {
+    dock: bottom;
+    height: 1;
+    background: #1a0a2e;
+}
+
+#status-row {
+    width: 100%;
+    height: 1;
+    layout: horizontal;
+}
+
+#status-model {
+    width: 2fr;
+    color: #00ffcc;
+}
+
+#status-memory {
+    width: 1fr;
+    color: #e0b0ff;
+}
+
+#status-session {
+    width: 1fr;
+    color: #888;
+}
+
+#status-rate {
+    width: 1fr;
+    color: #ff9f43;
+}

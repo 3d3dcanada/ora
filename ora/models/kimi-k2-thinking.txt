@@ -1,0 +1,381 @@
+python----
+
+
+
+from openai import OpenAI
+import json
+
+client = OpenAI(
+  base_url="https://integrate.api.nvidia.com/v1",
+  api_key="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"
+)
+
+completion = client.chat.completions.create(
+  model="moonshotai/kimi-k2-thinking",
+  messages=[{"role":"user","content":""}],
+  temperature=1,
+  top_p=0.9,
+  max_tokens=16384,
+  stream=True
+)
+
+
+for chunk in completion:
+  if not getattr(chunk, "choices", None):
+    continue
+  reasoning = getattr(chunk.choices[0].delta, "reasoning_content", None)
+  if reasoning:
+    print(reasoning, end="")
+  if chunk.choices[0].delta.content:
+    print(chunk.choices[0].delta.content, end="")
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+LANG-------
+
+
+from langchain_nvidia_ai_endpoints import ChatNVIDIA
+
+client = ChatNVIDIA(
+  model="moonshotai/kimi-k2-thinking",
+  api_key="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", 
+  temperature=1,
+  top_p=0.9,
+  max_tokens=16384,
+)
+
+for chunk in client.stream([{"role":"user","content":""}]):
+  if chunk.additional_kwargs and "reasoning_content" in chunk.additional_kwargs:
+    print(chunk.additional_kwargs["reasoning_content"], end="")
+  print(chunk.content, end="")
+
+
+
+
+
+
+
+
+
+
+NODE-------
+
+
+
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  apiKey: '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',
+  baseURL: 'https://integrate.api.nvidia.com/v1',
+});
+
+async function main() {
+  const completion = await openai.chat.completions.create({
+    model: "moonshotai/kimi-k2-thinking",
+    messages: [{"role":"user","content":""}],
+    temperature: 1,
+    top_p: 0.9,
+    max_tokens: 16384,
+    stream: true
+  });
+
+  
+  for await (const chunk of completion) {
+    const delta = chunk.choices[0]?.delta;
+    
+    const reasoning = delta?.reasoning_content;
+    if (reasoning) {
+      process.stdout.write(reasoning);
+    }
+
+    if (delta?.content) {
+      process.stdout.write(delta.content);
+    }
+  }
+  
+}
+
+main().catch(console.error);
+
+
+
+SHELL----
+
+
+curl 'https://integrate.api.nvidia.com/v1/chat/completions' \
+  -H 'Content-Type: application/json' \
+  -H "Authorization: Bearer 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" \
+  -d @- <<'EOF'
+{"model":"moonshotai/kimi-k2-thinking","messages":[{"role":"user","content":""}],"temperature":1,"top_p":0.9,"max_tokens":16384,"stream":true}
+EOF
+
+
+
+Kimi-K2-Thinking
+Description
+Kimi K2 Thinking is the most capable open-source thinking model. Starting with Kimi K2 Thinking, we built it as a thinking agent that reasons step-by-step while dynamically invoking tools. It sets a new state-of-the-art on Humanity's Last Exam (HLE), BrowseComp, and other benchmarks by dramatically scaling multi-step reasoning depth and maintaining stable tool-use across 200–300 sequential calls. At the same time, Kimi K2 Thinking is a native INT4 quantization model with 256k context window, achieving lossless reductions in inference latency and GPU memory usage.
+
+This model is ready for commercial/non-commercial use.
+
+Third-Party Community Consideration:
+This model is not owned or developed by NVIDIA. This model has been developed and built to a third-party's requirements for this application and use case; see link to Non-NVIDIA Kimi-K2-Thinking Model Card
+
+License and Terms of Use:
+GOVERNING TERMS: This trial service is governed by the NVIDIA API Trial Terms of Service. Use of this model is governed by the NVIDIA Open Model License Agreement. Additional Information: Modified MIT License.
+
+Deployment Geography:
+Global
+
+Use Case:
+This model is designed for advanced reasoning, agentic AI with deep thinking capabilities, multi-step problem-solving with tool orchestration, complex mathematical reasoning, coding with autonomous workflows, and research tasks requiring long-horizon agency. It can be used for autonomous research workflows, complex coding projects spanning hundreds of steps, mathematical problem-solving with extended reasoning, web browsing and information synthesis, and tool-orchestrated task execution.
+
+Key Features
+
+Deep Thinking & Tool Orchestration: End-to-end trained to interleave chain-of-thought reasoning with function calls, enabling autonomous research, coding, and writing workflows that last hundreds of steps without drift.
+Native INT4 Quantization: Quantization-Aware Training (QAT) is employed in post-training stage to achieve lossless 2x speed-up in low-latency mode.
+Stable Long-Horizon Agency: Maintains coherent goal-directed behavior across up to 200–300 consecutive tool invocations, surpassing prior models that degrade after 30–50 steps.
+Release Date:
+build.nvidia.com 12/08/2025: Available via link
+Huggingface Available via link
+
+Reference(s):
+References:
+
+Kimi K2: Open Agentic Intelligence - Tech Blog
+Hugging Face Model Card
+Moonshot AI Platform
+Model Architecture:
+Architecture Type: Transformer
+
+Network Architecture: Mixture-of-Experts (MoE)
+Total Parameters: 1T
+Activated Parameters: 32B
+Number of Layers (Dense layer included): 61
+Number of Dense Layers: 1
+Attention Hidden Dimension: 7168
+MoE Hidden Dimension (per Expert): 2048
+Number of Attention Heads: 64
+Number of Experts: 384
+Selected Experts per Token: 8
+Number of Shared Experts: 1
+Vocabulary Size: 160K
+Context Length: 256K
+Attention Mechanism: MLA
+Activation Function: SwiGLU
+Base Model: Kimi-K2-Base
+Input:
+Input Types: Text, Tool Definitions
+Input Formats: String, JSON
+Input Parameters: One-Dimensional (1D)
+Other Input Properties: The model has a context window of up to 256,000 tokens. Supports interleaved reasoning traces and tool calls.
+Input Context Length (ISL): 256K
+
+Output:
+Output Format: String, JSON (for tool calls)
+Output Parameters: One-Dimensional (1D)
+Other Output Properties: Includes separate reasoning_content traces alongside final responses. Supports streaming and non-streaming modes.
+
+Our AI models are designed and/or optimized to run on NVIDIA GPU-accelerated systems. By leveraging NVIDIA's hardware (e.g. GPU cores) and software frameworks (e.g., CUDA libraries), the model achieves faster training and inference times compared to CPU-only solutions.
+
+Software Integration:
+Runtime Engines:
+
+vLLM
+SGLang
+KTransformers
+Supported Hardware:
+
+NVIDIA Blackwell: B100, B200, GB200
+NVIDIA Hopper: H100, H200
+Operating Systems: Linux
+
+Model Version(s):
+Kimi K2 Thinking v1.0
+
+Training, Testing, and Evaluation Datasets:
+Training Dataset
+Training Data Collection: Undisclosed
+Training Labeling: Undisclosed
+Training Properties: Trained with Quantization-Aware Training (QAT) during post-training phase for native INT4 support.
+
+Testing Dataset
+Testing Data Collection: Undisclosed
+Testing Labeling: Undisclosed
+Testing Properties: Undisclosed
+
+Evaluation Dataset
+Evaluation Benchmark Score:
+
+HLE (Text-only) with tools: 44.9%
+HLE Heavy Mode: 51.0%
+AIME25 with python: 99.1%
+AIME25 Heavy Mode: 100.0%
+HMMT25 with python: 95.1%
+HMMT25 Heavy Mode: 97.5%
+GPQA (no tools): 84.5%
+BrowseComp with tools: 60.2%
+BrowseComp-ZH with tools: 62.3%
+SWE-bench Verified with tools: 71.3%
+MMLU-Pro (no tools): 84.6%
+LiveCodeBench: 64.8% Pass@1
+Evaluation Data Collection: Hybrid: Human, Automated
+Evaluation Labeling: Human
+Evaluation Properties: HLE, AIME25, HMMT25, IMO-AnswerBench, GPQA, MMLU-Pro, MMLU-Redux, Longform Writing, HealthBench, BrowseComp, BrowseComp-ZH, Seal-0, FinSearchComp-T3, Frames, SWE-bench Verified, SWE-bench Multilingual, Multi-SWE-bench, SciCode, LiveCodeBench, Terminal-Bench
+
+Evaluation Results
+Benchmark	Setting	Kimi K2 Thinking	GPT-5 (High)	Claude Sonnet 4.5 (Thinking)	K2 0905	DeepSeek-V3.2	Grok-4
+Reasoning Tasks
+HLE (Text-only)	no tools	23.9	26.3	19.8*	7.9	19.8	25.4
+HLE	w/ tools	44.9	41.7*	32.0*	21.7	20.3*	41.0
+HLE	heavy	51.0	42.0	-	-	-	50.7
+AIME25	no tools	94.5	94.6	87.0	51.0	89.3	91.7
+AIME25	w/ python	99.1	99.6	100.0	75.2	58.1*	98.8
+AIME25	heavy	100.0	100.0	-	-	-	100.0
+HMMT25	no tools	89.4	93.3	74.6*	38.8	83.6	90.0
+HMMT25	w/ python	95.1	96.7	88.8*	70.4	49.5*	93.9
+HMMT25	heavy	97.5	100.0	-	-	-	96.7
+IMO-AnswerBench	no tools	78.6	76.0*	65.9*	45.8	76.0*	73.1
+GPQA	no tools	84.5	85.7	83.4	74.2	79.9	87.5
+Agentic Search Tasks
+BrowseComp	w/ tools	60.2	54.9	24.1	7.4	40.1	-
+BrowseComp-ZH	w/ tools	62.3	63.0*	42.4*	22.2	47.9	-
+Seal-0	w/ tools	56.3	51.4*	53.4*	25.2	38.5*	-
+FinSearchComp-T3	w/ tools	47.4	48.5*	44.0*	10.4	27.0*	-
+Frames	w/ tools	87.0	86.0*	85.0*	58.1	80.2*	-
+Coding Tasks
+SWE-bench Verified	w/ tools	71.3	74.9	77.2	69.2	67.8	-
+SWE-bench Multilingual	w/ tools	61.1	55.3*	68.0	55.9	57.9	-
+Multi-SWE-bench	w/ tools	41.9	39.3*	44.3	33.5	30.6	-
+SciCode	no tools	44.8	42.9	44.7	30.7	37.7	-
+LiveCodeBench	no tools	64.8	64.4	60.4	49.8	60.8	-
+Terminal-Bench	w/ tools	36.8	42.0	-	5.0	26.7	-
+General Tasks
+MMLU-Pro	no tools	84.6	87.1	87.5	81.9	85.0	-
+MMLU-Redux	no tools	94.4	95.3	95.6	92.7	93.7	-
+Longform Writing	no tools	73.8	71.4	79.8	62.8	72.5	-
+HealthBench	no tools	58.0	67.2	44.2	43.8	46.9	-
+• Bold denotes best score for the benchmark.
+• Data points marked with * are taken directly from the model's tech report or blog.
+• All benchmark results are reported under INT4 precision.
+• Heavy Mode employs an efficient parallel strategy: it first rolls out eight trajectories simultaneously, then reflectively aggregates all outputs to generate the final result.
+Inference
+Acceleration Engine: vLLM, SGLang, KTransformers
+Test Hardware: NVIDIA H100, NVIDIA A100
+
+Additional Details
+Deployment
+You can access Kimi K2 Thinking's API on https://platform.moonshot.ai , we provide OpenAI/Anthropic-compatible API for you.
+
+Currently, Kimi K2 Thinking is recommended to run on the following inference engines:
+
+vLLM
+SGLang
+KTransformers
+Deployment examples can be found in the Model Deployment Guide.
+
+Model Usage
+Once the local inference service is up, you can interact with it through the chat endpoint:
+
+Python
+
+Copy
+def simple_chat(client: openai.OpenAI, model_name: str):
+    messages = [
+        {"role": "system", "content": "You are Kimi, an AI assistant created by Moonshot AI."},
+        {"role": "user", "content": [{"type": "text", "text": "which one is bigger, 9.11 or 9.9? think carefully."}]},
+    ]
+    response = client.chat.completions.create(
+        model=model_name,
+        messages=messages,
+        stream=False,
+        temperature=1.0,
+        max_tokens=4096
+    )
+    print(f"k2 answer: {response.choices[0].message.content}")
+    print("=====below is reasoning content======")
+    print(f"reasoning content: {response.choices[0].message.reasoning_content}")
+NOTE
+The recommended temperature for Kimi K2 Thinking is temperature = 1.0. If no special instructions are required, the system prompt above is a good default.
+
+Tool Calling
+Kimi K2 Thinking has the same tool calling settings as Kimi K2 Instruct. To enable them, you need to pass the list of available tools in each request, then the model will autonomously decide when and how to invoke them.
+
+The following example demonstrates calling a weather tool end-to-end:
+
+Python
+
+Copy
+# Your tool implementation
+def get_weather(city: str) -> dict:
+    return {"weather": "Sunny"}
+
+# Tool schema definition
+tools = [{
+    "type": "function",
+    "function": {
+        "name": "get_weather",
+        "description": "Retrieve current weather information. Call this when the user asks about the weather.",
+        "parameters": {
+            "type": "object",
+            "required": ["city"],
+            "properties": {
+                "city": {
+                    "type": "string",
+                    "description": "Name of the city"
+                }
+            }
+        }
+    }
+}]
+
+# Map tool names to their implementations
+tool_map = {
+    "get_weather": get_weather
+}
+
+def tool_call_with_client(client: OpenAI, model_name: str):
+    messages = [
+        {"role": "system", "content": "You are Kimi, an AI assistant created by Moonshot AI."},
+        {"role": "user", "content": "What's the weather like in Beijing today? Use the tool to check."}
+    ]
+    finish_reason = None
+    while finish_reason is None or finish_reason == "tool_calls":
+        completion = client.chat.completions.create(
+            model=model_name,
+            messages=messages,
+            temperature=1.0,
+            tools=tools,          # tool list defined above
+            tool_choice="auto"
+        )
+        choice = completion.choices[0]
+        finish_reason = choice.finish_reason
+        if finish_reason == "tool_calls":
+            messages.append(choice.message)
+            for tool_call in choice.message.tool_calls:
+                tool_call_name = tool_call.function.name
+                tool_call_arguments = json.loads(tool_call.function.arguments)
+                tool_function = tool_map[tool_call_name]
+                tool_result = tool_function(**tool_call_arguments)
+                print("tool_result:", tool_result)
+                
+                messages.append({
+                    "role": "tool",
+                    "tool_call_id": tool_call.id,
+                    "name": tool_call_name,
+                    "content": json.dumps(tool_result)
+                })
+    print("-" * 100)
+    print(choice.message.content)
+The tool_call_with_client function implements the pipeline from user query to tool execution. This pipeline requires the inference engine to support Kimi K2 Thinking's native tool-parsing logic. For more information, see the Tool Calling Guide.
+
+
